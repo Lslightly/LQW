@@ -1,0 +1,27 @@
+3
+8 O(n^2)
+F i 1 n
+F j n 2
+E
+F j n 3
+E
+F j n 4
+E
+E
+6 O(n^1)
+F i 1 n
+F j n 2
+F i 3 n
+E
+E
+E
+9 O(n^3)
+E
+F i 1 n
+F j 2 n
+F k 3 n
+E
+E
+E
+F i 1 n
+E

@@ -1,0 +1,32 @@
+# 工具
+## Markdown
+1. [markdown基础知识](https://zhuanlan.zhihu.com/p/56699805)
+1. [markdown基础知识2](https://www.runoob.com/markdown/md-tutorial.html)
+## vim
+* [基本操作](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/vim.md)
+## python
+* [基础知识]()
+
+# 算法
+## 背包问题
+* [01背包问题](https://blog.csdn.net/wumuzi520/article/details/7014559)
+* [完全背包问题](https://blog.csdn.net/wumuzi520/article/details/7014830)
+* [洛谷有题](https://www.luogu.com.cn/problem/P5662)
+## 链表排序
+* [单链表冒泡排序](https://blog.csdn.net/ljx_5489464/article/details/51154458)
+* [单链表冒泡与选择排序](https://blog.csdn.net/Vectory0213/article/details/79168475)
+>> 由于链表的单向性的特殊性质，故其处理方式与数组不太相同
+# 语法
+* [用malloc分配内存给指针数组](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/sortchar.c)
+* [Python·list用法](https://zhuanlan.zhihu.com/p/50332730)
+# 我的程序
+* [01背包问题](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/01bag.c)
+* [完全背包问题](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/bag.c)
+* [链表排序](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/lianbiao.md)
+* [同学通讯录](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/newproject.c)
+## 洛谷有题
+* [纪念品](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/souvenir.c)
+
+# Linux基本操作
+* [终端的一些快捷键](https://zhuanlan.zhihu.com/p/32878307)
+* [命令](https://git.lug.ustc.edu.cn/yuzhang/2019scisocial/blob/master/user%20lqw/linux.md)
