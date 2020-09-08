@@ -155,13 +155,6 @@
 ## reboot
 * 重启
 * reboot -w(模拟重启，不重启)
-##　shutdown
-* 关机　(服务器慎用)
-* shutdown -h now "关机提示"或 shutdown -h 15:25 ”关机提示“
-* ctrl-c：关机取消
-* init 0
-* halt
-* poweroff
 ## uptime
 * 输出计算机持续在线时间(从开机以来到现在运行的时间)
 * uptime
@@ -186,7 +179,8 @@
   * 5：配置文件或某些文件的格式
   * 8：系统管理员可用管理命令
 * ``man -f man``用来查询跟``man``相关的说明文件(有代号)
-* ``man -k 命令、文件``为关键字查询
+* ``man -k 命令、文件``为关键字(apropos)查询
+> apropos用关键字查询手册
 * ``whatis`` <==> ``man -f``
 * ``apropos`` <==> ``man -k``
 ### info
@@ -207,3 +201,16 @@
 * sudo apt-get install *** 安装
 * sudo apt-get remove *** 卸载
 * sudo apt-get update 更新
+
+
+# 9.7
+## 关机重启相关
+### ``sync``
+* 将内存中尚未更新的数据写入磁盘
+
+##　shutdown
+* 关机　(服务器慎用)
+* shutdown -h now "关机提示"或 shutdown -h 15:25 ”关机提示“
+* -c    关机取消
+* -r    重启
+* -k    “只发送消息，不关机”
