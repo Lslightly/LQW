@@ -18,3 +18,8 @@ dconf reset -f /org/gnome/control-center/
 #### 从aliyun源切换会ustc源之后会有package超前，``sudo apt upgrade``会显示``package broken``(solved)
 
 * 解决方法：切换会aliyun源，更新
+
+#### D盘在升级file之后无法查找
+
+* 解决方法：挂载D盘并设置开机自动挂载
+  * [方法网址](https://blog.csdn.net/qq_35451572/article/details/79541106)

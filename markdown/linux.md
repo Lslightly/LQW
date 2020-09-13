@@ -226,3 +226,20 @@
 
 > 桌面背景默认放置路径为``/usr/share/backgrounds``
 
+
+## 重新使用grub引导程序
+
+1. 将``/etc/default/grub``中的``GRUB_TIMEOUT_STYLE=hidden``注释掉
+2. 添加windows启动项
+   1.  ``sudo grub-install /dev/sda1``，sda1是``Microsoft basic data``
+   2.  ``cd /etc/grub.d``
+   3.  ``sudo gedit 40_custom``
+   4.  其中编辑如下
+```
+menuentry "Windows 10"{
+    set root='(hd0,1)'
+    chainloader (${root})/EFI/Microsoft/Boot/bootmgfw.efi
+}
+```
+* 成功
+
