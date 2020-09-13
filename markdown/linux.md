@@ -206,6 +206,7 @@
 # 9.7
 ## 关机重启相关
 ### ``sync``
+
 * 将内存中尚未更新的数据写入磁盘
 
 ##　shutdown
@@ -214,3 +215,14 @@
 * -c    关机取消
 * -r    重启
 * -k    “只发送消息，不关机”
+
+# 9.13
+## 切换登录界面（GDM）背景
+
+[知乎链接](https://zhuanlan.zhihu.com/p/51112469)
+
+* 需要修改``/usr/share/gnome-shell/theme/ubuntu.css``文件中的``lockDialogGroup``
+* 将``resources:///...``改为``file:///...``
+
+> 桌面背景默认放置路径为``/usr/share/backgrounds``
+
