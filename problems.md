@@ -11,7 +11,9 @@ dconf reset -f /org/gnome/control-center/
 
 ### 9.13
 
-#### GDM界面混乱(unsolved)
+#### GDM界面混乱(solved)
+* 重新安装``flat-remix-gnome``解决
+* 原因可能是上次卸载没有卸载干净
 
 在刚开机时进入的GDM界面，按下enter键输入密码时，原来的背景不消失，而且触碰其他地方展示出下拉栏之后，取消展示下拉栏，下拉栏仍然会保留，相当于点哪里哪里出现东西之后不会消失
 
