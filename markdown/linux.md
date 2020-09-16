@@ -258,9 +258,25 @@ menuentry "Windows 10"{
     2.  组名要在``/etc/group``下有存储
     3.  使用案例``chgrp users test.txt``
     4.  ``-R``选项直接修改文件夹的所有文件的所属用户组
+    5.  ``chgrp [-R] file/dir``
 2. 修改文件拥有者
    1. ``chown``(change owner)
    2. owner要在``/etc/passwd``下有存储
    3. 顺便修改所属用户组
    4. ``-R``类似
-   5. 
+   5. 方法``chown [-R] user[:group] file/dir``
+   6. 案例``chown root:root test.txt``,冒号后面的为group
+3. ``cp``会复制执行者的属性和权限
+4. 修改权限
+   1. ``chmod``
+   2. 数字修改法
+      1. 各权限对应数字
+         1. ``r-4``
+         2. ``w-2``
+         3. ``x-1``
+      2. 三种身份（owner，group，others）拥有权限为数字之和
+      3. 使用方法``chmod [-R] xyz file/dir``
+   3. vim编辑shell脚本，要运行，其他人不可修改``chmod 755 test.sh``
+      1. 7:rwx
+      2. 5:rx
+   4. 
