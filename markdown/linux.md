@@ -250,8 +250,8 @@ menuentry "Windows 10"{
 ```
 * 成功
 
-# 9.15
-## 修改文件属性与权限
+
+## 修改文件与文件夹属性与权限
 
 1.  修改所属用户组
     1.  ``chgrp``(change group)
@@ -278,5 +278,24 @@ menuentry "Windows 10"{
       3. 使用方法``chmod [-R] xyz file/dir``
    3. vim编辑shell脚本，要运行，其他人不可修改``chmod 755 test.sh``
       1. 7:rwx
-      2. 5:rx
-   4. 
+      2. 5:r-x
+   4. 符号修改法
+      1. 字母符号代表的意思
+         1. ``u`` <=> user
+         2. ``g`` <=> group
+         3. ``o`` <=> others
+         4. ``a`` <=> all
+         5. ``+`` 加入权限
+         6. ``-`` 删除权限
+         7. ``=`` 设置权限
+      2. 案例``chmod u=rwx,go=rx .bashrc``
+      3. 案例``chmod a+w .bashrc``
+5. ``rwx``对于文件与文件夹
+   1. 文件
+      1. ``r`` <=> ``read``
+      2. ``w`` <=> ``write``
+      3. ``x`` <=> ``execute``
+   2. 文件夹
+      1. ``r`` <=> ``read contents in dir``
+      2. ``w`` <=> ``modify contents in dir``
+      3. ``x`` <=> ``access dir``
