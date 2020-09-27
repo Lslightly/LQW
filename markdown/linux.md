@@ -299,3 +299,7 @@ menuentry "Windows 10"{
       1. ``r`` <=> ``read contents in dir``
       2. ``w`` <=> ``modify contents in dir``
       3. ``x`` <=> ``access dir``
+
+## 查看Ubuntu版本
+
+* ``lsb_release -a``
