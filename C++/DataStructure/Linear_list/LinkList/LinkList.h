@@ -1,16 +1,19 @@
 #ifndef LINKLIST_H_
 #define LINKLIST_H_
+
 template <class Type>
-class LNode{
-public:
+class LNode
+{
     Type data;
-    LNode * next;
+    LNode<Type> * next;
 };
 
 template <class Type>
 class LinkList{
 private:
     LNode<Type> * head;
+    LNode<Type> * tail;
+    int len;
 public:
     LinkList();
     ~LinkList();
@@ -31,19 +34,22 @@ LinkList<Type>::LinkList()
 {
     head = new LNode<Type>;
     head->next = nullptr;
+    tail = head;
+    len = 0;
 }
 
 template <class Type>
 LinkList<Type>::~LinkList()
 {
-    LNode<Type> * p = head;
-    LNode<Type> * s = p->next;
+    LNode<Type> * p = head->next;
+    LNode<Type> * s = nullptr;
     while (p != nullptr)
     {
+        s = p->next;
         delete p;
         p = s;
-        if (p != nullptr) s = p->next;
     }
+    delete head;
 }
 
 template <class Type>
@@ -68,6 +74,14 @@ bool LinkList<Type>::ListEmpty(void)
 template <class Type>
 int LinkList<Type>::ListLength(void)
 {
-    int i = 0;
+    return len;
+}
+
+template <class Type>
+bool LinkList<Type>::GetElem(const int i, Type & e)
+{
+    LNode<Type> * p = head->next;
+    
+    
 }
 #endif
