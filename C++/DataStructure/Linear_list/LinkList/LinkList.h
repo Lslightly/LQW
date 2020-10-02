@@ -15,33 +15,32 @@ public:
 template <class Type>
 class LinkList
 {
-private:
+public:
     LNode<Type> *head;
     LNode<Type> *tail;
     int len;
 
-public:
-    void PrintList();                                //  打印链表
-    LinkList();                                      //  构造空线性链表
-    ~LinkList();                                     //  销毁链表
-    void ClearList(void);                            //  将链表重置为空
-    void InsFirst(LNode<Type> *ins);                 //  将ins插入头结点之前
-    LNode<Type> *DelFirst(void);                     //  删除第一个结点并返回指针
-    void Append(LNode<Type> *s);                     //  将s所指的一串结点链接到尾结点后
-    LNode<Type> *Remove(void);                       //  删除尾结点并返回
-    void InsBefore(LNode<Type> *&p, LNode<Type> *s); //  p为链表中已知结点，s要插入p前面，p指向新插入的结点
-    void InsAfter(LNode<Type> *&p, LNode<Type> *s);  //  p为链表中已知结点，s要插入p后面，p指向新插入的结点
-    void SetCurElem(LNode<Type> *p, Type e);         //  p为链表中已知结点，用e更新p的data
-    Type GetCurElem(LNode<Type> *p);                 //  p为链表中已知结点，返回p->data
-    bool ListEmpty(void);                            //  返回链表是否为空，空true
-    int ListLength(void);                            //  返回链表长度
-    LNode<Type> *GetHead(void);                      //  返回头结点位置
-    LNode<Type> *GetTail(void);                      //  返回尾结点位置
-    LNode<Type> *PriorPos(LNode<Type> *p);           //  返回p直接前驱的位置
-    LNode<Type> *NextPos(LNode<Type> *p);            //  返回p直接后驱的位置
-    bool LocatePos(int i, LNode<Type> *&p);          //  用p返回第i个结点的位置,返回true; 若i不合法，返回false, p = nullptr
-    bool GetElem(const int i, Type &e);
-    LNode<Type> *LocateElem(const Type e, bool (*compare)(const Type a, const Type b)); //  返回与e匹配的结点位置，若不匹配，返回nullptr
+    void PrintList();                                                                   //  打印链表
+    LinkList();                                                                         //  构造空线性链表
+    ~LinkList();                                                                        //  销毁链表
+    void ClearList(void);                                                               //  将链表重置为空
+    void InsFirst(LNode<Type> *ins);                                                    //  将ins插入头结点之前
+    LNode<Type> *DelFirst(void);                                                        //  删除第一个结点并返回指针
+    void Append(LNode<Type> *s);                                                        //  将s所指的一串结点链接到尾结点后
+    LNode<Type> *Remove(void);                                                          //  删除尾结点并返回
+    void InsBefore(LNode<Type> *&p, LNode<Type> *s);                                    //  p为链表中已知结点，s要插入p前面，p指向新插入的结点
+    void InsAfter(LNode<Type> *&p, LNode<Type> *s);                                     //  p为链表中已知结点，s要插入p后面，p指向新插入的结点
+    void SetCurElem(LNode<Type> *p, Type e);                                            //  p为链表中已知结点，用e更新p的data
+    Type GetCurElem(LNode<Type> *p);                                                    //  p为链表中已知结点，返回p->data
+    bool ListEmpty(void);                                                               //  返回链表是否为空，空true
+    int ListLength(void);                                                               //  返回链表长度
+    LNode<Type> *GetHead(void);                                                         //  返回头结点位置
+    LNode<Type> *GetTail(void);                                                         //  返回尾结点位置
+    LNode<Type> *PriorPos(LNode<Type> *p);                                              //  返回p直接前驱的位置, nullptr之前设为tail
+    LNode<Type> *NextPos(LNode<Type> *p);                                               //  返回p直接后驱的位置
+    bool LocatePos(int i, LNode<Type> *&p);                                             //  用p返回第i个结点的位置,返回true; 若i不合法，返回false, p = nullptr
+    bool GetElem(const int i, Type &e);                                                 //  返回第i个结点的data
+    LNode<Type> *LocateElem(const Type e, int (*compare)(const Type a, const Type b)); //  返回与e匹配的结点位置，若不匹配，返回nullptr
     bool ListTraverse(bool (*visit)(Type &e));
 };
 
@@ -209,6 +208,7 @@ LNode<Type> *LinkList<Type>::GetTail(void)
 template <class Type>
 LNode<Type> *LinkList<Type>::PriorPos(LNode<Type> *p)
 {
+    if (p == nullptr) return tail;  //  nullptr前设为tail
     LNode<Type> *s = head;
     while (s != nullptr && s->next != p)
     {
@@ -260,7 +260,7 @@ bool LinkList<Type>::GetElem(const int i, Type &e)
 }
 
 template <class Type>
-LNode<Type> *LinkList<Type>::LocateElem(const Type e, bool (*compare)(const Type a, const Type b))
+LNode<Type> *LinkList<Type>::LocateElem(const Type e, int (*compare)(const Type a, const Type b))
 {
     LNode<Type> *p = head->next;
     while (p != nullptr)
@@ -269,7 +269,7 @@ LNode<Type> *LinkList<Type>::LocateElem(const Type e, bool (*compare)(const Type
             return p;
         p = p->next;
     }
-    return nullptr;
+    return p;
 }
 
 template <class Type>

@@ -1,111 +1,82 @@
 #ifndef POLYNOMIAL_H_
 #define POLYNOMIAL_H_
+#include "../LinkList/LinkList.h"
 #include <math.h>
 #include <stdio.h>
-typedef struct LNode
+typedef struct Item
 {
     double coef;
     int expn;
-    LNode *next;
-} LNode;
+} Item;
 
-class Polynomial
+class Polynomial : LinkList<Item>
 {
 private:
-    LNode *head;
     int n;
-    int len;
-
 public:
     Polynomial(void);
-    Polynomial(double coef, int expn);
-    Polynomial(const Polynomial &a);
-    ~Polynomial();
-    void PrintPolyn();
-    int PolynLength();
-    Polynomial operator+(const Polynomial &b);
-    Polynomial operator-(const Polynomial &b);
-    friend Polynomial operator-(const Polynomial &b);
-    Polynomial operator*(const Polynomial &b);
-    Polynomial &operator=(const Polynomial &b);
-    Polynomial derivate(int n);
-    LNode *ListInsert(LNode e); //  返回插入的指针
-    LNode *ListDelete(LNode e); //  返回删除那个节点的指针
+    // ~Polynomial();
+    Polynomial(const Polynomial &a);                  //  复制构造函数
+    void PrintPolyn();                                //  打印多项式
+    int PolynLength();                                //  求最高次
+    Polynomial operator+(const Polynomial &b);        //  两个多项式做加法
+    Polynomial operator-(const Polynomial &b);        //  两个多项式做减法
+    friend Polynomial operator-(const Polynomial &b); //  多项式取反
+    Polynomial operator*(const Polynomial &b);        //  两个多项式做乘法
+    Polynomial operator=(const Polynomial &b);        //  赋值
+    Polynomial derivate(int n);                       //  n阶导
+    LNode<Item> *ListInsert(LNode<Item> e);           //  复制新的e插入，返回插入的指针
+    LNode<Item> *ListDelete(LNode<Item> e);           //  返回删除那个节点的指针
     double calculate(double x);
 };
 
 Polynomial::Polynomial()
 {
-    head = new LNode;
+    head = new LNode<Item>;
     head->next = nullptr;
     len = 0;
-
-    printf("Enter the number of items:");
-    int n_in = 0;
-    scanf("%d", &n_in);
-
-    LNode *p = head;
-    for (int i = 0; i < n_in; i++)
-    {
-        double coef_in = 0;
-        int expn_in = 0;
-        scanf("%lf%d", &coef_in, &expn_in);
-        Polynomial b = Polynomial(coef_in, expn_in);
-        if (b.head->next != nullptr)
-            ListInsert(*(b.head->next));
-    }
-    if (head->next != nullptr)
-        n = head->next->expn;
-    else
-    {
-        LNode * p = new LNode;
-        p->next = nullptr;
-        p->expn = 0;
-        p->coef = 0;
-        head->next = p;
-        n = 0;
-    }
+    tail = head;
 }
 
-Polynomial::Polynomial(double coef, int expn)
-{
-    head = new LNode;
-    head->next = nullptr;
-    len = 0;
-    n = 0;
-    if (fabs(coef) > 0.0001)
-    {
-        LNode *p = new LNode;
-        p->coef = coef;
-        p->expn = expn;
-        p->next = nullptr;
-        head->next = p;
-        ++len;
-        n = expn;
-    }
-    else if (fabs(coef) < 0.0001 && expn == 0)
-    {
-        LNode *p = new LNode;
-        p->coef = 0;
-        p->expn = expn;
-        p->next = nullptr;
-        head->next = p;
-        ++len;
-        n = expn;
-    }
-}
+// Polynomial::Polynomial(double coef, int expn)
+// {
+//     head = new LNode<Item>;
+//     head->next = nullptr;
+//     len = 0;
+//     n = 0;
+//     if (fabs(coef) > 0.0001)
+//     {
+//         LNode<Item> *p = new LNode<Item>;
+//         p->data.coef = coef;
+//         p->data.expn = expn;
+//         p->next = nullptr;
+//         head->next = p;
+//         ++len;
+//         n = expn;
+//     }
+//     else if (fabs(coef) < 0.0001 && expn == 0)
+//     {
+//         LNode<Item> *p = new LNode<Item>;
+//         p->data.coef = 0;
+//         p->data.expn = expn;
+//         p->next = nullptr;
+//         head->next = p;
+//         ++len;
+//         n = expn;
+//     }
+// }
 
 Polynomial::Polynomial(const Polynomial &b)
 {
-    head = new LNode;
+    head = new LNode<Item>;
     head->next = nullptr;
-    LNode *pa = head;
-    LNode *pb = b.head->next;
+    LNode<Item> *pa = head;
+    LNode<Item> *pb = b.head->next;
     while (pb != nullptr)
     {
-        LNode *s = new LNode;
-        s->coef = pb->coef;
-        s->expn = pb->expn;
+        LNode<Item> *s = new LNode<Item>;
+        s->data.coef = pb->data.coef;
+        s->data.expn = pb->data.expn;
         s->next = nullptr;
         pa->next = s;
         pa = s;
@@ -113,24 +84,24 @@ Polynomial::Polynomial(const Polynomial &b)
     }
 }
 
-Polynomial::~Polynomial()
-{
-    LNode *p = head;
-    LNode *s = p->next;
-    while (p != nullptr)
-    {
-        s = p->next;
-        delete p;
-        p = s;
-    }
-}
+// Polynomial::~Polynomial()
+// {
+//     LNode<Item> *p = head;
+//     LNode<Item> *s = p->next;
+//     while (p != nullptr)
+//     {
+//         s = p->next;
+//         delete p;
+//         p = s;
+//     }
+// }
 
 void Polynomial::PrintPolyn()
 {
-    LNode *p = head->next;
+    LNode<Item> *p = head->next;
     while (p != nullptr)
     {
-        if (fabs(p->coef) < 0.0001 && p->expn == 0)
+        if (fabs(p->data.coef) < 0.0001 && p->data.expn == 0)
         {
             if (p != head->next)
             {
@@ -144,88 +115,88 @@ void Polynomial::PrintPolyn()
                 continue;
             }
         }
-        if (p->coef > 0 && p != head->next)
+        if (p->data.coef > 0 && p != head->next)
         {
-            if (fabs(p->coef - 1) < 0.0001)
+            if (fabs(p->data.coef - 1) < 0.0001)
             {
-                if (p->expn == 1)
+                if (p->data.expn == 1)
                     printf("+x");
-                else if (p->expn == 0)
+                else if (p->data.expn == 0)
                     printf("+1");
                 else
-                    printf("+x^%d", p->expn);
+                    printf("+x^%d", p->data.expn);
             }
-            else if (fabs(p->coef - int(p->coef)) < 0.0001)
+            else if (fabs(p->data.coef - int(p->data.coef)) < 0.0001)
             {
-                if (p->expn == 1)
-                    printf("+%dx", int(p->coef));
-                else if (p->expn == 0)
-                    printf("+%d", int(p->coef));
+                if (p->data.expn == 1)
+                    printf("+%dx", int(p->data.coef));
+                else if (p->data.expn == 0)
+                    printf("+%d", int(p->data.coef));
                 else
-                    printf("+%dx^%d", int(p->coef), p->expn);
+                    printf("+%dx^%d", int(p->data.coef), p->data.expn);
             }
             else
             {
-                if (p->expn == 0)
-                    printf("+%.2lf", p->coef);
-                else if (p->expn == 1)
-                    printf("+%.2lfx", p->coef);
+                if (p->data.expn == 0)
+                    printf("+%.2lf", p->data.coef);
+                else if (p->data.expn == 1)
+                    printf("+%.2lfx", p->data.coef);
                 else
-                    printf("+%.2lfx^%d", p->coef, p->expn);
+                    printf("+%.2lfx^%d", p->data.coef, p->data.expn);
             }
         }
-        else if (p->coef < 0)
+        else if (p->data.coef < 0)
         {
-            if (fabs(p->coef + 1) < 0.0001)
-                if (p->expn == 1)
+            if (fabs(p->data.coef + 1) < 0.0001)
+                if (p->data.expn == 1)
                     printf("-x");
-                else if (p->expn == 0)
+                else if (p->data.expn == 0)
                     printf("-1");
                 else
-                    printf("-x^%d", p->expn);
-            else if (fabs(p->coef - int(p->coef)) < 0.0001)
-                if (p->expn == 1)
-                    printf("%dx", int(p->coef));
-                else if (p->expn == 0)
-                    printf("%d", int(p->coef));
+                    printf("-x^%d", p->data.expn);
+            else if (fabs(p->data.coef - int(p->data.coef)) < 0.0001)
+                if (p->data.expn == 1)
+                    printf("%dx", int(p->data.coef));
+                else if (p->data.expn == 0)
+                    printf("%d", int(p->data.coef));
                 else
-                    printf("%dx^%d", int(p->coef), p->expn);
+                    printf("%dx^%d", int(p->data.coef), p->data.expn);
             else
             {
-                if (p->expn == 1)
-                    printf("%.2lfx", p->coef);
-                else if (p->expn == 0)
-                    printf("%.2lf", p->coef);
+                if (p->data.expn == 1)
+                    printf("%.2lfx", p->data.coef);
+                else if (p->data.expn == 0)
+                    printf("%.2lf", p->data.coef);
                 else
-                    printf("%.2lfx^%d", p->coef, p->expn);
+                    printf("%.2lfx^%d", p->data.coef, p->data.expn);
             }
         }
         else
         {
-            if (fabs(p->coef - 1) < 0.0001)
+            if (fabs(p->data.coef - 1) < 0.0001)
             {
-                if (p->expn == 1)
+                if (p->data.expn == 1)
                     printf("x");
-                else if (p->expn == 0)
+                else if (p->data.expn == 0)
                     printf("1");
                 else
-                    printf("x^%d", p->expn);
+                    printf("x^%d", p->data.expn);
             }
-            else if (fabs(p->coef - int(p->coef)) < 0.0001)
-                if (p->expn == 1)
-                    printf("%dx", int(p->coef));
-                else if (p->expn == 0)
-                    printf("%d", int(p->coef));
+            else if (fabs(p->data.coef - int(p->data.coef)) < 0.0001)
+                if (p->data.expn == 1)
+                    printf("%dx", int(p->data.coef));
+                else if (p->data.expn == 0)
+                    printf("%d", int(p->data.coef));
                 else
-                    printf("%dx^%d", int(p->coef), p->expn);
+                    printf("%dx^%d", int(p->data.coef), p->data.expn);
             else
             {
-                if (p->expn == 0)
-                    printf("%.2lf", p->coef);
-                else if (p->expn == 1)
-                    printf("%.2lfx", p->coef);
+                if (p->data.expn == 0)
+                    printf("%.2lf", p->data.coef);
+                else if (p->data.expn == 1)
+                    printf("%.2lfx", p->data.coef);
                 else
-                    printf("%.2lfx^%d", p->coef, p->expn);
+                    printf("%.2lfx^%d", p->data.coef, p->data.expn);
             }
         }
         p = p->next;
@@ -235,7 +206,7 @@ void Polynomial::PrintPolyn()
 
 int Polynomial::PolynLength()
 {
-    LNode *p = head;
+    LNode<Item> *p = head;
     int i = 0;
     while (p->next != nullptr)
     {
@@ -248,27 +219,33 @@ int Polynomial::PolynLength()
 
 Polynomial Polynomial::operator+(const Polynomial &b)
 {
-    LNode *pa = head->next;
-    LNode *pb = b.head->next;
-    Polynomial c = Polynomial(0, 0);
+    LNode<Item> *pa = head->next;
+    LNode<Item> *pb = b.head->next;
+    Item e = {0, 0};
+    LNode<Item> temp = LNode<Item>(e);
+    Polynomial c; //= Polynomial();
+    c.ListInsert(e);
     while (pa != nullptr && pb != nullptr)
     {
-        if (pa->expn > pb->expn)
+        if (pa->data.expn > pb->data.expn)
         {
-            c.ListInsert(*pa);
+            if (fabs(pa->data.coef) > 0.0001)
+                c.ListInsert(*pa);
             pa = pa->next;
         }
-        else if (pa->expn < pb->expn)
+        else if (pa->data.expn < pb->data.expn)
         {
-            c.ListInsert(*pb);
+            if (fabs(pb->data.coef) > 0.0001)
+                c.ListInsert(*pb);
             pb = pb->next;
         }
         else
         {
-            LNode *temp = new LNode;
-            temp->coef = pa->coef + pb->coef;
-            temp->expn = pa->expn;
-            c.ListInsert(*temp);
+            LNode<Item> *temp = new LNode<Item>;
+            temp->data.coef = pa->data.coef + pb->data.coef;
+            temp->data.expn = pa->data.expn;
+            if (fabs(temp->data.coef) > 0.0001)
+                c.ListInsert(*temp);
             delete temp;
             pa = pa->next;
             pb = pb->next;
@@ -278,7 +255,7 @@ Polynomial Polynomial::operator+(const Polynomial &b)
     {
         while (pb != nullptr)
         {
-            LNode *temp = pb;
+            LNode<Item> *temp = pb;
             c.ListInsert(*pb);
             pb = pb->next;
         }
@@ -287,67 +264,81 @@ Polynomial Polynomial::operator+(const Polynomial &b)
     {
         while (pa != nullptr)
         {
-            LNode *temp = pa;
+            LNode<Item> *temp = pa;
             c.ListInsert(*pa);
             pa = pa->next;
         }
     }
-    n = c.head->next->expn;
+    n = c.head->next->data.expn;
     return c;
 }
 
-LNode *Polynomial::ListInsert(LNode e)
+int cmp_expn_larger(const Item a, const Item b)
 {
-    LNode *p = head;
-    LNode *insert = new LNode;
-    insert->coef = e.coef;
-    insert->expn = e.expn;
-    while (p->next != nullptr)
+    return a.expn <= b.expn;
+}
+
+LNode<Item> *Polynomial::ListInsert(LNode<Item> e)
+{
+    LNode<Item> *p = nullptr;
+    LNode<Item> *insert = new LNode<Item>;
+    insert->data.coef = e.data.coef;
+    insert->data.expn = e.data.expn;
+    p = LocateElem(e.data, cmp_expn_larger);
+    if (p != nullptr)
     {
-        if (p->next->expn > e.expn)
-            p = p->next;
-        else
-            break;
-    }
-    if (p->next != nullptr)
-    {
-        if (p->next->expn == e.expn)
+        if (p->data.expn == e.data.expn)
         {
-            p->next->coef += e.coef;
-            return p->next;
+            p->data.coef += e.data.coef;
+            return p;
         }
     }
-    LNode *s = p->next;
-    p->next = insert;
+    LNode<Item> *p_pripr = PriorPos(p);
+    LNode<Item> *s = p_pripr->next;
+    p_pripr->next = insert;
     insert->next = s;
+    if (insert->next == nullptr)
+        tail = insert;
     len++;
     return insert;
 }
 
-LNode *Polynomial::ListDelete(LNode e)
+int cmp_coef_equal(const Item a, const Item b)
 {
-    LNode *p = head;
-    while (p->next != nullptr)
-    {
-        if (p->next->expn != e.expn)
-        {
-            p = p->next;
-        }
-        else
-            break;
-    }
-    LNode *s = p->next;
-    p->next = p->next->next;
-    return s;
+    return fabs(a.coef - b.coef) < 0.0001;
+}
+
+LNode<Item> *Polynomial::ListDelete(LNode<Item> e)
+{
+    // LNode<Item> *p = head;
+    // while (p->next != nullptr)
+    // {
+    //     if (p->next->data.expn != e.data.expn)
+    //     {
+    //         p = p->next;
+    //     }
+    //     else
+    //         break;
+    // }
+    // LNode<Item> *s = p->next;
+    // p->next = p->next->next;
+    // return s;
+    LNode<Item> *p = nullptr;
+    p = LocateElem(e.data, cmp_coef_equal); //  确定e所在位置结点位置
+    LNode<Item> *p_prior = PriorPos(p);     //  p的前面
+    p_prior->next = p->next;                //  断开p
+    return p;
 }
 
 Polynomial operator-(const Polynomial &b)
 {
-    Polynomial c = Polynomial(0, 0);
-    LNode *p = b.head->next;
+    Polynomial c; //= Polynomial();
+    c.ListInsert(LNode<Item>({0, 0}));
+    LNode<Item> *p = b.head->next;
     while (p != nullptr)
     {
-        Polynomial temp = Polynomial(-p->coef, p->expn);
+        Polynomial temp = Polynomial();
+        temp.ListInsert(LNode<Item>({-p->data.coef, p->data.expn}));
         c = c + temp;
         p = p->next;
     }
@@ -361,14 +352,16 @@ Polynomial Polynomial::operator-(const Polynomial &b)
 
 Polynomial Polynomial::operator*(const Polynomial &b)
 {
-    Polynomial c = Polynomial(0, 0);
-    LNode *pa = head->next;
+    Polynomial c; //= Polynomial();
+    c.ListInsert(LNode<Item>({0, 0}));
+    LNode<Item> *pa = head->next;
     while (pa != nullptr)
     {
-        LNode *pb = b.head->next;
+        LNode<Item> *pb = b.head->next;
         while (pb != nullptr)
         {
-            Polynomial temp = Polynomial(pa->coef * pb->coef, pa->expn + pb->expn);
+            Polynomial temp = Polynomial();
+            temp.ListInsert(LNode<Item>({pb->data.coef * pa->data.coef, pa->data.expn + pb->data.expn}));
             c = c + temp;
             pb = pb->next;
         }
@@ -377,17 +370,17 @@ Polynomial Polynomial::operator*(const Polynomial &b)
     return c;
 }
 
-Polynomial &Polynomial::operator=(const Polynomial &b)
+Polynomial Polynomial::operator=(const Polynomial &b)
 {
-    head = new LNode;
+    head = new LNode<Item>;
     head->next = nullptr;
-    LNode *pa = head;
-    LNode *pb = b.head->next;
+    LNode<Item> *pa = head;
+    LNode<Item> *pb = b.head->next;
     while (pb != nullptr)
     {
-        LNode *s = new LNode;
-        s->coef = pb->coef;
-        s->expn = pb->expn;
+        LNode<Item> *s = new LNode<Item>;
+        s->data.coef = pb->data.coef;
+        s->data.expn = pb->data.expn;
         s->next = nullptr;
         pa->next = s;
         pa = s;
@@ -403,12 +396,14 @@ Polynomial Polynomial::derivate(int n)
         return this->derivate(n - 1).derivate(1);
     }
 
-    Polynomial c = Polynomial(0, 0);
+    Polynomial c; //= Polynomial();
+    c.ListInsert(LNode<Item>({0, 0}));
 
-    LNode *p = head->next;
+    LNode<Item> *p = head->next;
     while (p != nullptr)
     {
-        Polynomial temp = Polynomial(p->coef * p->expn, p->expn - 1);
+        Polynomial temp = Polynomial();
+        temp.ListInsert(LNode<Item>({p->data.coef * p->data.expn, p->data.expn - 1}));
         c = c + temp;
         p = p->next;
     }
@@ -419,15 +414,15 @@ double Polynomial::calculate(double x)
 {
     double sum = 0, temp = 1;
 
-    LNode *p = head->next;
+    LNode<Item> *p = head->next;
     while (p != nullptr)
     {
         temp = 1;
-        for (int i = 0; i < p->expn; i++)
+        for (int i = 0; i < p->data.expn; i++)
         {
             temp *= x;
         }
-        sum += temp * p->coef;
+        sum += temp * p->data.coef;
         p = p->next;
     }
     return sum;
