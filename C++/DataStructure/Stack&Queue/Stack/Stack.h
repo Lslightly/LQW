@@ -4,7 +4,7 @@
 #define STACK_INIT_SIZE 100 //  初始分配量
 #define STACKINCREMENT 10   //  存储空间增量
 
-#include <malloc.h>
+#include <cstring>
 
 template <class Type>
 class SqStack
@@ -28,13 +28,8 @@ template <class Type>
 SqStack<Type>::SqStack()
 {
     base = new Type[STACK_INIT_SIZE];
-    if (base == nullptr)
-    {
-        return false;
-    }
     top = base;
     stacksize = STACK_INIT_SIZE;
-    return true;
 }
 
 template <class Type>
@@ -76,7 +71,7 @@ bool SqStack<Type>::Push(Type e)
         Type *base_new = new Type[stacksize + STACKINCREMENT];
         if (base_new == nullptr)
             return false;
-        memcpy(base_new, base);
+        memcpy(base_new, base, top-base);
         delete[] base;
         base = base_new;
     }
