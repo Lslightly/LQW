@@ -1,11 +1,15 @@
 #ifndef LINKLIST_H_
 #define LINKLIST_H_
-
+#include <stdio.h>
 template <class Type>
 class LNode
 {
+public:
     Type data;
     LNode<Type> *next;
+    LNode();
+    LNode(Type e); //  创建data=e结点
+    ~LNode();
 };
 
 template <class Type>
@@ -17,6 +21,7 @@ private:
     int len;
 
 public:
+    void PrintList();                                //  打印链表
     LinkList();                                      //  构造空线性链表
     ~LinkList();                                     //  销毁链表
     void ClearList(void);                            //  将链表重置为空
@@ -95,7 +100,7 @@ template <class Type>
 LNode<Type> *LinkList<Type>::DelFirst(void)
 {
     LNode<Type> *p = head->next;
-    if (p ！ = nullptr)
+    if (p != nullptr)
     {
         head->next = p->next;
         if (tail == p)
@@ -129,8 +134,8 @@ LNode<Type> *LinkList<Type>::Remove(void)
     {
         p = p->next;
     }
-    LNode<Type> *s = tail;
-    tail = p;
+    LNode<Type> *s = p->next;
+    p->next = tail->next;
     --len;
     return s;
 }
@@ -186,7 +191,7 @@ bool LinkList<Type>::ListEmpty(void)
 template <class Type>
 int LinkList<Type>::ListLength(void)
 {
-    return len;   
+    return len;
 }
 
 template <class Type>
@@ -198,14 +203,14 @@ LNode<Type> *LinkList<Type>::GetHead(void)
 template <class Type>
 LNode<Type> *LinkList<Type>::GetTail(void)
 {
-    return tail;   
+    return tail;
 }
 
 template <class Type>
 LNode<Type> *LinkList<Type>::PriorPos(LNode<Type> *p)
 {
-    LNode<Type> * s = head;
-    while (s != nullptr && s->next != p)   
+    LNode<Type> *s = head;
+    while (s != nullptr && s->next != p)
     {
         s = s->next;
     }
@@ -215,13 +220,13 @@ LNode<Type> *LinkList<Type>::PriorPos(LNode<Type> *p)
 template <class Type>
 LNode<Type> *LinkList<Type>::NextPos(LNode<Type> *p)
 {
-    return p->next;    
+    return p->next;
 }
 
 template <class Type>
 bool LinkList<Type>::LocatePos(int i, LNode<Type> *&p)
 {
-    if (i > len)    
+    if (i > len)
     {
         p = nullptr;
         return false;
@@ -241,8 +246,8 @@ bool LinkList<Type>::LocatePos(int i, LNode<Type> *&p)
 template <class Type>
 bool LinkList<Type>::GetElem(const int i, Type &e)
 {
-    LNode<Type> * p = nullptr;
-    if (LocatePos(i, p))    
+    LNode<Type> *p = nullptr;
+    if (LocatePos(i, p))
     {
         e = p->data;
         return true;
@@ -271,10 +276,42 @@ template <class Type>
 bool LinkList<Type>::ListTraverse(bool (*visit)(Type &e))
 {
     LNode<Type> *p = head->next;
-    while (p != nullptr)    
+    while (p != nullptr)
     {
         if (!(*visit)(p->data))
             return false;
     }
     return true;
 }
+
+template <class Type>
+LNode<Type>::LNode()
+{
+    next = nullptr;
+}
+
+template <class Type>
+LNode<Type>::LNode(Type e)
+{
+    data = e;
+    next = nullptr;
+}
+
+template <class Type>
+LNode<Type>::~LNode()
+{
+    next = nullptr;
+}
+
+template <class Type>
+void LinkList<Type>::PrintList(void)
+{
+    LNode<int> *p = head->next;
+    while (p != nullptr)
+    {
+        printf("%d->", p->data);
+        p = p->next;
+    }
+    printf(" %d\n", len);
+}
+#endif
