@@ -1,6 +1,6 @@
 # https://www.liaoxuefeng.com/wiki/1016959663602400/1017316949097888
 def findMinAndMax(L):
-    if not L:
+    if not L:   # L为空
         return None, None
     else:
         maxn = 0

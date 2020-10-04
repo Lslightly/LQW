@@ -1,4 +1,5 @@
 # https://www.liaoxuefeng.com/wiki/1016959663602400/1017318207388128
+# -*- coding: utf-8 -*-
 def triangles():
     l = [1]
     while 1:
@@ -11,9 +12,7 @@ def triangles():
 n = 0
 results = []
 for t in triangles():
-    print(t)
     results.append(t)  # 这里不是应该将t加在results末尾吗？为什么会是复制
-    print(results)
     n = n + 1
     if n == 10:
         break
