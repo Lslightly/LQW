@@ -41,7 +41,7 @@ public:
     bool LocatePos(int i, LNode<Type> *&p);                                             //  用p返回第i个结点的位置,返回true; 若i不合法，返回false, p = nullptr
     bool GetElem(const int i, Type &e);                                                 //  返回第i个结点的data
     LNode<Type> *LocateElem(const Type e, int (*compare)(const Type a, const Type b)); //  返回与e匹配的结点位置，若不匹配，返回nullptr
-    bool ListTraverse(bool (*visit)(Type &e));
+    bool ListTraverse(bool (*visit)());
 };
 
 template <class Type>
@@ -108,6 +108,7 @@ LNode<Type> *LinkList<Type>::DelFirst(void)
         }
         --len;
     }
+    head->next = p->next;
     return p;
 }
 
@@ -160,8 +161,6 @@ void LinkList<Type>::InsAfter(LNode<Type> *&p, LNode<Type> *s)
     LNode<Type> *temp = p->next;
     p->next = s;
     s->next = temp;
-    if (s->next == nullptr)
-        tail = s;
     ++len;
     p = s;
 }
@@ -273,7 +272,7 @@ LNode<Type> *LinkList<Type>::LocateElem(const Type e, int (*compare)(const Type 
 }
 
 template <class Type>
-bool LinkList<Type>::ListTraverse(bool (*visit)(Type &e))
+bool LinkList<Type>::ListTraverse(bool (*visit)())
 {
     LNode<Type> *p = head->next;
     while (p != nullptr)
