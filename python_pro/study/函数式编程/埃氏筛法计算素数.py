@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def _odd_iter():
     n = 1
     while True:
