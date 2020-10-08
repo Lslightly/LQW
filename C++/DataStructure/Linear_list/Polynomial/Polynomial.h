@@ -9,15 +9,19 @@ typedef struct Item
     int expn;
 } Item;
 
+void clean_input_tail(void);
+
 class Polynomial : LinkList<Item>
 {
 private:
-    int n;
+    int max_expn;
+
 public:
     Polynomial(void);
     // ~Polynomial();
     Polynomial(const Polynomial &a);                  //  复制构造函数
-    void PrintPolyn();                                //  打印多项式
+    void PrintPolyn();                                //  优化方式打印多项式
+    void PrintPolyn_basic();                          //  基础打印
     int PolynLength();                                //  求最高次
     Polynomial operator+(const Polynomial &b);        //  两个多项式做加法
     Polynomial operator-(const Polynomial &b);        //  两个多项式做减法
@@ -27,6 +31,7 @@ public:
     Polynomial derivate(int n);                       //  n阶导
     LNode<Item> *ListInsert(LNode<Item> e);           //  复制新的e插入，返回插入的指针
     LNode<Item> *ListDelete(LNode<Item> e);           //  返回删除那个节点的指针
+    void Input(void);
     double calculate(double x);
 };
 
@@ -98,23 +103,18 @@ Polynomial::Polynomial(const Polynomial &b)
 
 void Polynomial::PrintPolyn()
 {
+    PolynLength();
+    if (len == 0)
+    {
+        printf("1 items, ");
+        printf("0\n");
+        return;
+    }
+
+    printf("%d items, ", len);
     LNode<Item> *p = head->next;
     while (p != nullptr)
     {
-        if (fabs(p->data.coef) < 0.0001 && p->data.expn == 0)
-        {
-            if (p != head->next)
-            {
-                p = p->next;
-                continue;
-            }
-            else
-            {
-                printf("0");
-                p = p->next;
-                continue;
-            }
-        }
         if (p->data.coef > 0 && p != head->next)
         {
             if (fabs(p->data.coef - 1) < 0.0001)
@@ -229,14 +229,12 @@ Polynomial Polynomial::operator+(const Polynomial &b)
     {
         if (pa->data.expn > pb->data.expn)
         {
-            if (fabs(pa->data.coef) > 0.0001)
-                c.ListInsert(*pa);
+            c.ListInsert(*pa);
             pa = pa->next;
         }
         else if (pa->data.expn < pb->data.expn)
         {
-            if (fabs(pb->data.coef) > 0.0001)
-                c.ListInsert(*pb);
+            c.ListInsert(*pb);
             pb = pb->next;
         }
         else
@@ -244,8 +242,7 @@ Polynomial Polynomial::operator+(const Polynomial &b)
             LNode<Item> *temp = new LNode<Item>;
             temp->data.coef = pa->data.coef + pb->data.coef;
             temp->data.expn = pa->data.expn;
-            if (fabs(temp->data.coef) > 0.0001)
-                c.ListInsert(*temp);
+            c.ListInsert(*temp);
             delete temp;
             pa = pa->next;
             pb = pb->next;
@@ -269,7 +266,10 @@ Polynomial Polynomial::operator+(const Polynomial &b)
             pa = pa->next;
         }
     }
-    n = c.head->next->data.expn;
+    if (c.head->next != nullptr)
+        max_expn = c.head->next->data.expn;
+    else
+        max_expn = 0;
     return c;
 }
 
@@ -280,6 +280,8 @@ int cmp_expn_larger(const Item a, const Item b)
 
 LNode<Item> *Polynomial::ListInsert(LNode<Item> e)
 {
+    if (fabs(e.data.coef) < 0.00001)
+        return nullptr;
     LNode<Item> *p = nullptr;
     LNode<Item> *insert = new LNode<Item>;
     insert->data.coef = e.data.coef;
@@ -427,4 +429,48 @@ double Polynomial::calculate(double x)
     }
     return sum;
 }
+
+void Polynomial::Input(void)
+{
+    printf("Enter the number of items:\n");
+    int n_in = 0;
+    scanf("%d", &n_in);
+
+    for (int i = 0; i < n_in; i++)
+    {
+        double coef_in = 0;
+        int expn_in = 0;
+        scanf("%lf%d", &coef_in, &expn_in);
+        Polynomial b = Polynomial();
+        b.ListInsert(LNode<Item>({coef_in, expn_in}));
+        *this = *this + b;
+    }
+    // clean_input_tail();
+}
+
+// void clean_input_tail(void)
+// {
+//     char ch = 0;
+//     while ((ch = getchar()) != '\n' && ch != EOF);
+// }
+void Polynomial::PrintPolyn_basic()
+{
+    PolynLength();
+    if (len == 0)
+    {
+        printf("1 0 0\n");
+        return ;
+    }
+    printf("%d ", len);
+    LNode<Item>*p = head->next;
+    while (p != nullptr)
+    {
+        printf("%lf %d ", p->data.coef, p->data.expn);
+        p = p->next;
+    }
+    putchar('\n');
+}
 #endif
+
+
+
