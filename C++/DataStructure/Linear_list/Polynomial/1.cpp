@@ -33,7 +33,7 @@ void display_basic(Polynomial **polys);
 
 bool is_num_0(void); //  检查个数是否为0
 
-int input_ni(void); //  输入对第几个多项式进行操作，一定要合法，返回下标
+int input_ni(void); //  输入对第几个多项式进行操作，一定要合法，返回ni-1
 
 int main(void)
 {
@@ -47,65 +47,65 @@ int main(void)
 
 void input_ch(Polynomial **polys)
 {
-    char ch = 0;
+    int order = 0;
     bool quit_flag = false;
     int input_i1 = 0, input_i2 = 0;
-    while (ch = getchar())
+    while (scanf("%d", &order) == 1)
     {
-        switch (ch)
+        switch (order)
         {
-        case '1':
+        case 1:
             menu();
             break;
-        case '2':
+        case 2:
             create(polys);
             break;
-        case '3':
+        case 3:
             if (is_num_0())
                 break;
             display(polys);
             break;
-        case '4':
+        case 4:
             if (is_num_0())
                 break;
             display_all(polys);
             break;
-        case '5':
+        case 5:
             if (is_num_0())
                 break;
             add(polys);
             break;
-        case '6':
+        case 6:
             if (is_num_0())
                 break;
             subtract(polys);
             break;
-        case '7':
+        case 8:
             if (is_num_0())
                 break;
             multiply(polys);
             break;
-        case '8':
+        case 9:
             if (is_num_0())
                 break;
             derivate(polys);
             break;
-        case '9':
+        case 10:
             if (is_num_0())
                 break;
             calculate(polys);
             break;
-        case 'A':
+        case 7:
             if (is_num_0())
                 break;
             delete_my(polys);
             break;
-        case 'B':
+        case 11:
             if (is_num_0())
                 break;
             delete_all(polys);
             break;
-        case 'C':
+        case 12:
             if (is_num_0())
                 break;
             display_basic(polys);
@@ -130,12 +130,12 @@ void menu(void)
 *****4.   display all     *****\n\
 *****5.   add             *****\n\
 *****6.   subtract        *****\n\
-*****7.   multiply        *****\n\
-*****8.   derivate        *****\n\
-*****9.   calculate       *****\n\
-*****A.   delete          *****\n\
-*****B.   delete all      *****\n\
-*****C.   display(basic)  *****\n\
+*****7.   delete          *****\n\
+*****8.   multiply        *****\n\
+*****9.   derivate        *****\n\
+*****10.  calculate       *****\n\
+*****11.  delete all      *****\n\
+*****12.  display(basic)  *****\n\
 **********OPERATIONS***********\n");
 }
 
@@ -150,6 +150,7 @@ void display_all(Polynomial **polys)
 {
     for (int i = 0; i < num_polyn; i++)
     {
+        printf("Poly%d: ", i+1);
         polys[i]->PrintPolyn();
     }
 }
@@ -166,7 +167,10 @@ void add(Polynomial **polys)
     int input_i1 = 0, input_i2 = 0;
     input_i1 = input_ni();
     input_i2 = input_ni();
-    ((*polys[input_i1]) + (*polys[input_i2])).PrintPolyn();
+    polys[num_polyn] = new Polynomial();
+    *polys[num_polyn] = (*polys[input_i1]) + (*polys[input_i2]);
+    num_polyn++;
+    (*polys[num_polyn - 1]).PrintPolyn();
 }
 
 void subtract(Polynomial **polys)
@@ -174,7 +178,10 @@ void subtract(Polynomial **polys)
     int input_i1 = 0, input_i2 = 0;
     input_i1 = input_ni();
     input_i2 = input_ni();
-    ((*polys[input_i1]) - (*polys[input_i2])).PrintPolyn();
+    polys[num_polyn] = new Polynomial();
+    *polys[num_polyn] = (*polys[input_i1]) - (*polys[input_i2]);
+    num_polyn++;
+    (*polys[num_polyn - 1]).PrintPolyn();
 }
 
 void multiply(Polynomial **polys)
@@ -182,7 +189,10 @@ void multiply(Polynomial **polys)
     int input_i1 = 0, input_i2 = 0;
     input_i1 = input_ni();
     input_i2 = input_ni();
-    ((*polys[input_i1]) * (*polys[input_i2])).PrintPolyn();
+    polys[num_polyn] = new Polynomial();
+    *polys[num_polyn] = (*polys[input_i1]) * (*polys[input_i2]);
+    num_polyn++;
+    (*polys[num_polyn - 1]).PrintPolyn();
 }
 
 void derivate(Polynomial **polys)
@@ -196,8 +206,10 @@ void derivate(Polynomial **polys)
     {
         printf("\nPlease input positive integer:");
     }
-
-    polys[ni]->derivate(times).PrintPolyn();
+    polys[num_polyn] = new Polynomial();
+    *polys[num_polyn] = polys[ni]->derivate(times);
+    num_polyn++;
+    (*polys[num_polyn - 1]).PrintPolyn();
 }
 
 void calculate(Polynomial **polys)
@@ -239,12 +251,12 @@ int input_ni(void)
 {
     int ni = 0;
     printf("Please input which polynomial you want to operate:");
-    while (scanf("%d", &ni) == 0 || !(ni >= 0 && ni < num_polyn))
+    while (scanf("%d", &ni) == 0 || !(ni >= 1 && ni <= num_polyn))
     {
-        printf("\nPlease input integer from %d to %d:", 0, num_polyn - 1);
+        printf("\nPlease input integer from %d to %d:", 1, num_polyn);
     }
     // clean_input_tail();
-    return ni;
+    return ni - 1;
 }
 
 bool is_num_0(void)

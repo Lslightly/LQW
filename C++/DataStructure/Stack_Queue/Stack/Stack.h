@@ -71,7 +71,7 @@ bool SqStack<Type>::Push(Type e)
         Type *base_new = new Type[stacksize + STACKINCREMENT];
         if (base_new == nullptr)
             return false;
-        memcpy(base_new, base, top-base);
+        memcpy(base_new, base, top - base);
         delete[] base;
         base = base_new;
     }

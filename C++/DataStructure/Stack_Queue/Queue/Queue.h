@@ -2,19 +2,18 @@
 #define QUEUE_H_
 #include "../../Linear_list/LinkList/LinkList.h"
 
-
 template <class Type>
-class Queue:LinkList<int>
+class Queue : LinkList<Type>
 {
 public:
     Queue();
-    void ClearQueue();  //  清空队列
-    bool QueueEmpty();  //  队列为空，返回true;否则返回false
-    int QueueLength();  //  返回元素个数
-    bool GetHead(Type & e); //  若队列不空，e返回对头元素；否则返回false;
-    bool EnQueue(Type e);   //  插入队尾，插入失败返回false;
-    bool DeQueue(Type & e); //  队不空，删除并返回队头元素，返回true，否则返回false；
-    bool QueueTraverse(bool (* visit)());     //  对队列中每个元素执行*visit, 若失败，返回false
+    void ClearQueue();                   //  清空队列
+    bool QueueEmpty();                   //  队列为空，返回true;否则返回false
+    int QueueLength();                   //  返回元素个数
+    bool GetHead(Type &e);               //  若队列不空，e返回对头元素；否则返回false;
+    bool EnQueue(Type e);                //  插入队尾，插入失败返回false;
+    bool DeQueue(Type &e);               //  队不空，删除并返回队头元素，返回true，否则返回false；
+    bool QueueTraverse(bool (*visit)()); //  对队列中每个元素执行*visit, 若失败，返回false
 };
 
 template <class Type>
@@ -28,13 +27,11 @@ Queue<Type>::Queue()
 template <class Type>
 void Queue<Type>::ClearQueue()
 {
-    LNode<Type> * p = head->next;
+    LNode<Type> *p = head->next;
     LNode<Type> *s = nullptr;
     while (p != nullptr)
     {
-        s = p->next;
-        delete p;
-        p = s;
+        DeQueue();
     }
 }
 
@@ -47,29 +44,33 @@ bool Queue<Type>::QueueEmpty()
 template <class Type>
 int Queue<Type>::QueueLength()
 {
-    return tail-head;    
+    return tail - head;
 }
 
 template <class Type>
-bool Queue<Type>::GetHead(Type & e)
+bool Queue<Type>::GetHead(Type &e)
 {
-    if (QueueEmpty()) return false;
-    return head->next->data;
+    if (QueueEmpty())
+        return false;
+    e = head->next->data;
+    return true;
 }
 
 template <class Type>
 bool Queue<Type>::EnQueue(Type e)
 {
-    LNode<Type> * p = new LNode<Type>;
+    LNode<Type> *p = new LNode<Type>;
     if (p == nullptr)
         return false;
     *p = LNode<Type>(e);
-    InsAfter(tail, p);
+    tail->next = p;
+    p->next = nullptr;
+    tail = p;
     return true;
 }
 
 template <class Type>
-bool Queue<Type>::DeQueue(Type & e)
+bool Queue<Type>::DeQueue(Type &e)
 {
     if (QueueEmpty())
     {
@@ -77,14 +78,16 @@ bool Queue<Type>::DeQueue(Type & e)
     }
     else
     {
-        head = head->next;
-        e = head->data;
+        LNode<Type> *p = head->next;
+        e = p->next->data;
+        head->next = p->next;
+        delete p;
         return true;
     }
 }
 
 template <class Type>
-bool Queue<Type>::QueueTraverse(bool (* visit)())
+bool Queue<Type>::QueueTraverse(bool (*visit)())
 {
     return ListTraverse(visit);
 }

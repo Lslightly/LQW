@@ -3,21 +3,21 @@
 #include "../LinkList/LinkList.h"
 #include <math.h>
 #include <stdio.h>
-typedef struct Item
+typedef struct Item //  项
 {
-    double coef;
-    int expn;
+    double coef; //  系数
+    int expn;    //  指数
 } Item;
 
 void clean_input_tail(void);
 
-class Polynomial : LinkList<Item>
+class Polynomial : public LinkList<Item>   //  继承Item链表
 {
 private:
-    int max_expn;
+    int max_expn; //  最大指数
 
 public:
-    Polynomial(void);
+    Polynomial(void);                                 //  初始化
     // ~Polynomial();
     Polynomial(const Polynomial &a);                  //  复制构造函数
     void PrintPolyn();                                //  优化方式打印多项式
@@ -31,8 +31,8 @@ public:
     Polynomial derivate(int n);                       //  n阶导
     LNode<Item> *ListInsert(LNode<Item> e);           //  复制新的e插入，返回插入的指针
     LNode<Item> *ListDelete(LNode<Item> e);           //  返回删除那个节点的指针
-    void Input(void);
-    double calculate(double x);
+    void Input(void);                                 //  输入多项式
+    double calculate(double x);                       //  代x计算
 };
 
 Polynomial::Polynomial()
@@ -436,6 +436,7 @@ void Polynomial::Input(void)
     int n_in = 0;
     scanf("%d", &n_in);
 
+    printf("Enter coefs and expns:\n");
     for (int i = 0; i < n_in; i++)
     {
         double coef_in = 0;
@@ -459,10 +460,10 @@ void Polynomial::PrintPolyn_basic()
     if (len == 0)
     {
         printf("1 0 0\n");
-        return ;
+        return;
     }
     printf("%d ", len);
-    LNode<Item>*p = head->next;
+    LNode<Item> *p = head->next;
     while (p != nullptr)
     {
         printf("%lf %d ", p->data.coef, p->data.expn);
@@ -471,6 +472,3 @@ void Polynomial::PrintPolyn_basic()
     putchar('\n');
 }
 #endif
-
-
-

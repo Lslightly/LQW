@@ -24,7 +24,7 @@ public:
     LinkList();                                                                         //  构造空线性链表
     ~LinkList();                                                                        //  销毁链表
     void ClearList(void);                                                               //  将链表重置为空
-    void InsFirst(LNode<Type> *ins);                                                    //  将ins插入头结点之前
+    void InsFirst(LNode<Type> *ins);                                                    //  将ins插入头结点之后
     LNode<Type> *DelFirst(void);                                                        //  删除第一个结点并返回指针
     void Append(LNode<Type> *s);                                                        //  将s所指的一串结点链接到尾结点后
     LNode<Type> *Remove(void);                                                          //  删除尾结点并返回
