@@ -28,8 +28,8 @@ public:
     LNode<Type> *DelFirst(void);                                                        //  删除第一个结点并返回指针
     void Append(LNode<Type> *s);                                                        //  将s所指的一串结点链接到尾结点后
     LNode<Type> *Remove(void);                                                          //  删除尾结点并返回
-    void InsBefore(LNode<Type> *&p, LNode<Type> *s);                                    //  p为链表中已知结点，s要插入p前面，p指向新插入的结点
-    void InsAfter(LNode<Type> *&p, LNode<Type> *s);                                     //  p为链表中已知结点，s要插入p后面，p指向新插入的结点
+    void InsBefore(LNode<Type> *p, LNode<Type> *s);                                    //  p为链表中已知结点，s要插入p前面，p指向新插入的结点
+    void InsAfter(LNode<Type> *p, LNode<Type> *s);                                     //  p为链表中已知结点，s要插入p后面，p指向新插入的结点
     void SetCurElem(LNode<Type> *p, Type e);                                            //  p为链表中已知结点，用e更新p的data
     Type GetCurElem(LNode<Type> *p);                                                    //  p为链表中已知结点，返回p->data
     bool ListEmpty(void);                                                               //  返回链表是否为空，空true
@@ -141,7 +141,7 @@ LNode<Type> *LinkList<Type>::Remove(void)
 }
 
 template <class Type>
-void LinkList<Type>::InsBefore(LNode<Type> *&p, LNode<Type> *s)
+void LinkList<Type>::InsBefore(LNode<Type> *p, LNode<Type> *s)
 {
     LNode<Type> *p1 = head;
     while (p1 != nullptr && p1->next != p)
@@ -156,7 +156,7 @@ void LinkList<Type>::InsBefore(LNode<Type> *&p, LNode<Type> *s)
 }
 
 template <class Type>
-void LinkList<Type>::InsAfter(LNode<Type> *&p, LNode<Type> *s)
+void LinkList<Type>::InsAfter(LNode<Type> *p, LNode<Type> *s)
 {
     LNode<Type> *temp = p->next;
     p->next = s;
