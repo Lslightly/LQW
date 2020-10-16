@@ -2,8 +2,15 @@
 #define QUEUE_H_
 #include "../../Linear_list/LinkList/LinkList.h"
 
+typedef struct customer
+{
+    int arrival_time;
+    int amount;
+    int duration;
+}Customer;
+
 template <class Type>
-class Queue : LinkList<Type>
+class Queue : public LinkList<Customer>
 {
 public:
     Queue();
@@ -38,13 +45,20 @@ void Queue<Type>::ClearQueue()
 template <class Type>
 bool Queue<Type>::QueueEmpty()
 {
-    return tail - head == 0;
+    return head->next == nullptr;
 }
 
 template <class Type>
 int Queue<Type>::QueueLength()
 {
-    return tail - head;
+    LNode<Type> *p = head;
+    int len = 0;
+    while (p->next != nullptr)
+    {
+        ++len;
+        p = p->next;
+    }
+    return len;
 }
 
 template <class Type>
@@ -79,7 +93,7 @@ bool Queue<Type>::DeQueue(Type &e)
     else
     {
         LNode<Type> *p = head->next;
-        e = p->next->data;
+        e = p->data;
         head->next = p->next;
         delete p;
         return true;
