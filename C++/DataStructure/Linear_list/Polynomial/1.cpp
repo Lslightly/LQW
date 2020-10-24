@@ -37,11 +37,9 @@ int input_ni(void); //  输入对第几个多项式进行操作，一定要合�
 
 int main(void)
 {
-    // FILE * fp = freopen("1.txt", "r", stdin);
     menu();
     Polynomial *polyns[100] = {nullptr};
     input_ch(polyns);
-    // fclose(fp);
     return 0;
 }
 
@@ -52,7 +50,7 @@ void input_ch(Polynomial **polys)
     int input_i1 = 0, input_i2 = 0;
     while (scanf("%d", &order) == 1)
     {
-        switch (order)
+        switch (order)  //  命令判断
         {
         case 1:
             menu();
@@ -61,7 +59,7 @@ void input_ch(Polynomial **polys)
             create(polys);
             break;
         case 3:
-            if (is_num_0())
+            if (is_num_0()) //  如果多项式数量为0则不能进行运算
                 break;
             display(polys);
             break;
@@ -111,7 +109,7 @@ void input_ch(Polynomial **polys)
             display_basic(polys);
             break;
         default:
-            quit_flag = true;
+            quit_flag = true;   //  不是上述情况，退出
             break;
         }
         getchar();
@@ -255,7 +253,6 @@ int input_ni(void)
     {
         printf("\nPlease input integer from %d to %d:", 1, num_polyn);
     }
-    // clean_input_tail();
     return ni - 1;
 }
 
