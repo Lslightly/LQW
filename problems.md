@@ -24,4 +24,4 @@ dconf reset -f /org/gnome/control-center/
 #### D盘在升级file之后无法查找(solved)
 
 * 解决方法：挂载D盘并设置开机自动挂载
-  * [方法网址](https://blog.csdn.net/qq_35451572/article/details/79541106)
+  * [方法网址](https://blog.csdn.net/qq_3545152/article/details/79541106)
