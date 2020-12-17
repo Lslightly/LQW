@@ -304,3 +304,17 @@ menuentry "Windows 10"{
 ## 查看Ubuntu版本
 
 * ``lsb_release -a``
+
+## 修改截图默认保存位置
+
+[修改截图默认保存位置](https://www.cnblogs.com/by-sknight/p/12321503.html)
+
+``gsettings set org.gnome.gnome-screenshot auto-save-directory "/home/sknight/Pictures/Screenshot/"``
+
+在setting界面添加自己的快捷键
+
+```
+gnome-screenshot 对应截屏命令
+gnome-screenshot -a 对应选择区域截屏
+gnome-screenshot -w 截屏当前窗口命令
+```
