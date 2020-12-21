@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#define m 3
+#define m 3     //  阶数
 
 typedef int KeyType;
 
@@ -53,4 +54,50 @@ int Search(BTree p, KeyType K)
     return i;
 }
 
+bool InsertBTree(BTree &T, KeyType K, BTree q, int i)
+{
+    BTree ap = nullptr;
+    int x = K;
+    bool finished = false;
 
+    while (q && !finished)
+    {
+        Insert(q, i, x, ap);
+        if (q->keynum < m) finished = true;
+        else
+        {
+            int s = (m+1)/2;    //  取上整
+            split(q, s, ap);
+            x = q->key[s];
+
+            q = q->parent;
+            if (q) Search(q, x);
+        }
+    }
+    if (!finished)
+        NewRoot(T, q, x, ap);
+    return true;
+}
+
+void Insert(BTree & q, int i, int x, BTree & ap)
+{
+    q->keynum++;
+    for (int j = q->keynum; j > i + 1; j--)
+    {
+        q->key[j] = q->key[j-1];
+        q->ptr[j] = q->ptr[j-1];
+    }
+    q->key[i+1] = x;
+    q->ptr[i+1] = ap;
+}
+
+void split(BTree & q, int s, BTree ap)
+{
+    ap = (BTree)malloc(sizeof(BTNode));
+
+}
+
+void NewRoot(BTree & T, BTree q, int x, BTree & ap)
+{
+
+}
