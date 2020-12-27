@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_CHARS 256
+#define MAX_CHARS 1000
 typedef struct HTNode
 {
     unsigned int weight;
