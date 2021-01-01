@@ -22,6 +22,12 @@ typedef struct
 
 typedef SqList HeapType;
 
+
+/*  QuickSort
+    using   Partition()
+            Qsort
+            QuickSort
+*/
 int Partition(SqList & L, int low, int high)
 {
     L.r[0] = L.r[low];
@@ -140,6 +146,10 @@ int ThreeColorSort(SqList &L)
     return OK;
 }
 
+/*  HeapSort
+    using   HeapAdjust
+            HeapSort
+*/
 void HeapAdjust(HeapType &H, int s, int m)
 {
     RedType rc = H.r[s];
@@ -188,3 +198,100 @@ void InsertHeap(HeapType &H, RedType k)
         else break;
     }
 }
+
+
+/*  MergeSort
+    using   Merge
+            Msort
+            MergeSort
+*/
+void Merge(RedType SR[MAXSIZE], RedType * & TR, int i, int m, int n)
+{
+    int j = 0, k = 0;
+    for (j = m+1, k = i; i <= m && j <= n; ++k)
+    {
+        if (SR[i].key <= SR[j].key) TR[k] = SR[i++];
+        else    TR[k] = SR[j++];
+    }
+    if (i <= m)
+    {
+        for (; k <= n;) 
+        {
+            TR[k] = SR[i];
+            ++k; ++i;
+        }
+    }
+    if (j <= n)
+    {
+        for (; k <= n; )
+        {
+            TR[k] = SR[j];
+            ++k; ++j;
+        }
+    }
+}
+
+void MSort(RedType SR[MAXSIZE], RedType * & TR1, int s, int t)
+{
+    if (s == t) TR1[s] = SR[s];
+    else
+    {
+        int m = (s+t)/2;
+        RedType * TR2 = (RedType *)malloc(MAXSIZE * sizeof(*TR2));
+        MSort(SR, TR2, s, m);
+        MSort(SR, TR2, m+1, t);
+        Merge(TR2, TR1, s, m, t);
+    }
+}
+
+void MergeSort(SqList &L)
+{
+    MSort(L.r, L.r, 1, L.length);
+}
+
+void MSort1(RedType SR[MAXSIZE], int s, int t, int k, int begin[MAXSIZE], int end[MAXSIZE])
+{
+    RedType * TR2 = (RedType *)malloc(MAXSIZE * sizeof(*TR2));
+    int i = 0;
+    while (k != 1)
+    {
+        for (i = 1; i+1 <= k; i+=2)
+        {
+            Merge(SR, TR2, begin[i], end[i], end[i+1]);
+        }
+        if (k % 2)
+        {
+            for (i = begin[k]; i <= t; i++)
+                TR2[i] = SR[i];
+        }
+        for (i = s; i <= t; i++)
+        {
+            SR[i] = TR2[i];
+        }
+        for (i = s; 2*i <= t; i++)
+        {
+            begin[i] = begin[2*i-1];
+            end[i] = end[2*i];
+        }
+        if (k % 2)
+        {
+            begin[i] = begin[k];
+            end[i] = end[k];
+        }
+        k = (k+1)/2;
+    }
+}
+
+/*
+    时间复杂度O(nlogn)
+*/
+void MergeSort1(SqList &L)
+{
+    int begin[MAXSIZE], end[MAXSIZE];
+    for (int i = 1; i <= L.length; i++)
+    {
+        begin[i] = end[i] = i;
+    }
+    MSort1(L.r, 1, L.length, L.length, begin, end);
+}
+

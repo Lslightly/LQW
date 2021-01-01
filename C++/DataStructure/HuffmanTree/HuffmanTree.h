@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "priority_queue.h"
 
 #define MAX_CHARS 1000
 typedef struct HTNode
 {
+    int i;
     unsigned int weight;
     unsigned int parent, lchild, rchild;
 }HTNode, * HuffmanTree;
@@ -13,9 +15,9 @@ typedef char ** HuffmanCode;
 
 void Select(HuffmanTree & HT, int i, int & s1, int & s2);
 
-void PrintHuffmanTree(HuffmanTree T, int n, char chtable[]);
-
 void HuffmanDecoding(HuffmanTree & HT, HuffmanCode &HC, int &n);
+
+int cmp_weight(const HTNode & a, const HTNode & b);
 
 //  HC: Huffman Code
 void HuffmanCoding(HuffmanTree & HT, HuffmanCode & HC, unsigned int * w, int n)
@@ -28,16 +30,37 @@ void HuffmanCoding(HuffmanTree & HT, HuffmanCode & HC, unsigned int * w, int n)
     m = 2*n-1;
     HT = (HuffmanTree)malloc(sizeof(HTNode)*(m+1));
     
-    for (p = HT+1, i = 1; i <= n; ++i, ++p, ++w) *p = {*w, 0, 0, 0};
+    // for (p = HT+1, i = 1; i <= n; ++i, ++p, ++w) *p = {*w, 0, 0, 0};
 
-    for (; i <= m; ++i, ++p) *p = {0, 0, 0, 0};
+    // for (; i <= m; ++i, ++p) *p = {0, 0, 0, 0};
 
+    // for (i = n+1; i <= m; i++)
+    // {
+    //     Select(HT, i-1, s1, s2);
+    //     HT[s1].parent = i;  HT[s2].parent = i;
+    //     HT[i].lchild = s1; HT[i].rchild = s2;
+    //     HT[i].weight = HT[s1].weight + HT[s2].weight;
+    // }
+    Priority_Queue<HTNode> HT_queue;
+
+    HT_queue.init(HT_queue, m, cmp_weight);
+    for (p = HT+1, i = 1; i <= n; i++, ++w, ++p)
+    {
+        *p = {i, *w, 0, 0, 0};
+        HT_queue.enqueue(HT_queue, *p);
+    }
+    
     for (i = n+1; i <= m; i++)
     {
-        Select(HT, i-1, s1, s2);
-        HT[s1].parent = i;  HT[s2].parent = i;
-        HT[i].lchild = s1; HT[i].rchild = s2;
-        HT[i].weight = HT[s1].weight + HT[s2].weight;
+        HTNode min1, min2;
+        HT_queue.dequeue(HT_queue, min1);
+        HT_queue.dequeue(HT_queue, min2);
+        unsigned int mini = (min1.i < min2.i)?min1.i:min2.i;
+        unsigned int maxi = (mini == min1.i)?min2.i:min1.i;
+        HT[i] = {i, min1.weight+min2.weight, 0, mini, maxi};
+        HT[min1.i].parent = i;
+        HT[min2.i].parent = i;
+        HT_queue.enqueue(HT_queue, HT[i]);
     }
 
     HC = (HuffmanCode)malloc(sizeof(*HC)*(n+1));
@@ -88,18 +111,7 @@ void Select(HuffmanTree & HT, int i, int & s1, int &s2)
     }
 }
 
-void PrintHuffmanTree(HuffmanTree T, int n, char chtable[MAX_CHARS])
+int cmp_weight(const HTNode & a, const HTNode & b)
 {
-    int i = 1;
-    printf("%d\n", n);
-    int m = 2*n-1;
-    for (i = 1; i <= n; i++)
-    {
-        printf("%c %u %u %u %u\n", chtable[i], T[i].weight, T[i].parent,T[i].lchild, T[i].rchild);
-    }
-    for (; i<=m; i++)
-    {
-        printf("%u %u %u %u\n", T[i].weight, T[i].parent,T[i].lchild, T[i].rchild);
-    }
-
+    return a.weight - b.weight;
 }
