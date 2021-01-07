@@ -6,7 +6,7 @@
 #define MAX_CHARS 1000
 typedef struct HTNode
 {
-    int i;
+    unsigned int i;
     unsigned int weight;
     unsigned int parent, lchild, rchild;
 }HTNode, * HuffmanTree;
@@ -46,7 +46,7 @@ void HuffmanCoding(HuffmanTree & HT, HuffmanCode & HC, unsigned int * w, int n)
     HT_queue.init(HT_queue, m, cmp_weight);
     for (p = HT+1, i = 1; i <= n; i++, ++w, ++p)
     {
-        *p = {i, *w, 0, 0, 0};
+        *p = {(unsigned int)i, *w, 0, 0, 0};
         HT_queue.enqueue(HT_queue, *p);
     }
     
@@ -55,11 +55,11 @@ void HuffmanCoding(HuffmanTree & HT, HuffmanCode & HC, unsigned int * w, int n)
         HTNode min1, min2;
         HT_queue.dequeue(HT_queue, min1);
         HT_queue.dequeue(HT_queue, min2);
-        unsigned int mini = (min1.i < min2.i)?min1.i:min2.i;
-        unsigned int maxi = (mini == min1.i)?min2.i:min1.i;
-        HT[i] = {i, min1.weight+min2.weight, 0, mini, maxi};
-        HT[min1.i].parent = i;
-        HT[min2.i].parent = i;
+        // unsigned int mini = (min1.i < min2.i)?min1.i:min2.i;
+        // unsigned int maxi = (mini == min1.i)?min2.i:min1.i;
+        HT[i] = {(unsigned int)i, min1.weight+min2.weight, 0, min1.i, min2.i};
+        HT[min1.i].parent = (unsigned int)i;
+        HT[min2.i].parent = (unsigned int)i;
         HT_queue.enqueue(HT_queue, HT[i]);
     }
 
