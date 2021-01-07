@@ -9,6 +9,7 @@ typedef struct BitCode
 {
     unsigned char *bytecode;
     int bytes;
+    int len;
 } BitCode;
 
 void PrintHuffmanTree(HuffmanTree T, int n, unsigned char chtable[], FILE *foutp);
@@ -30,17 +31,6 @@ int main(int argc, char **argv)
     HuffmanTree T = nullptr;
     HuffmanCode code = nullptr;
     int n;
-
-    // char **test;
-    // test = (char **)malloc(10 * sizeof(*test));
-    // test[1] = (char *)malloc(11 * sizeof(char));
-    // scanf("%s", test[1]);
-    // BitCode *t1;
-    // t1 = (BitCode *)malloc(sizeof(BitCode) * 2);
-    // GenerateBitCode(test, t1, 1);
-    // printf("%hhx", t1[1].bytecode[0]);
-    // printf("%hhx", t1[1].bytecode[1]);
-    // return 0;
 
     if (argv[1][0] == '-')
     {
@@ -70,16 +60,16 @@ void Count(unsigned int w[MAX_CHARS], int &n, int *table, unsigned char chtable[
     int len_source = strlen(source);
     for (int i = 0; i <= len_source; i++) //  给源文件名统计字符
     {
-        if (table[source[i] + 128] == 0) //  +128变unsigned char
+        if (table[source[i]] == 0)
         {
             n++;
-            table[source[i] + 128] = n;
-            w[table[source[i] + 128]]++;
-            chtable[n] = source[i] + 128;
+            table[source[i]] = n;
+            w[table[source[i]]]++;
+            chtable[n] = source[i];
         }
         else
         {
-            w[table[source[i] + 128]]++;
+            w[table[source[i]]]++;
         }
     }
     if (source[strlen(source) - 1] == '/')
@@ -110,6 +100,8 @@ void Count(unsigned int w[MAX_CHARS], int &n, int *table, unsigned char chtable[
 
 void Compress(HuffmanTree &T, unsigned int *w, HuffmanCode code, int &n, int *table, char *source, char *dest)
 {
+    int bitk = 0;
+    unsigned char bytes = 0;
     unsigned char chtable[MAX_CHARS];
     BitCode *bitcode;
     char pathname[256][MAX_CHARS];
@@ -133,7 +125,7 @@ void Compress(HuffmanTree &T, unsigned int *w, HuffmanCode code, int &n, int *ta
     }
     HuffmanCoding(T, code, w, n);
     bitcode = (BitCode *)malloc(sizeof(*bitcode) * (n + 1));
-    GenerateBitCode(code, bitcode, n);
+    // GenerateBitCode(code, bitcode, n);
     FILE *foutp = fopen(real_dest, "wb");
     PrintHuffmanTree(T, n, chtable, foutp);
 
@@ -142,23 +134,72 @@ void Compress(HuffmanTree &T, unsigned int *w, HuffmanCode code, int &n, int *ta
     for (int i = 0; i < num_files; i++)
     {
         len_pathname = strlen(pathname[i]);
-        for (int j = 0; j <= len_pathname; j++)
-            fwrite(bitcode[table[pathname[i][j] + 128]].bytecode, sizeof(unsigned char), bitcode[table[pathname[i][j] + 128]].bytes, foutp);
-        // fwrite(code[table[pathname[i][j] + 128]], sizeof(char), strlen(code[table[pathname[i][j] + 128]]), foutp);
+        int table_path;
+        fwrite(&len_pathname, sizeof(int), 1, foutp); //  在解压时读入需要加1，因为还有一个\0
+        for (int j = 0; j <= len_pathname; j++)       //  打印文件名,包括\0符
+        {
+            table_path = table[pathname[i][j]];
+            for (int k = 0; k < strlen(code[table_path]); k++)
+            {
+                bytes <<= 1;
+                bytes += code[table_path][k] - '0';
+                ++bitk;
+                if (bitk == 8)
+                {
+                    fwrite(&bytes, sizeof(unsigned char), 1, foutp);
+                    bytes = 0;
+                    bitk = 0;
+                }
+            }
+        }
+        while (bitk != 8 && bitk != 0)
+        {
+            bytes <<= 1;
+            ++bitk;
+        }
+        if (bitk == 8)
+            fwrite(&bytes, sizeof(unsigned char), 1, foutp); //  处理剩余部分
+        bytes = 0;
+        bitk = 0;
         if (pathname[i][strlen(pathname[i]) - 1] != '/')
         {
             FILE *fp = fopen(pathname[i], "rb");
+            fseek(fp, 0L, SEEK_END);
+            long flen = ftell(fp);
+            fseek(fp, 0L, SEEK_SET);
+            fwrite(&flen, sizeof(long), 1, foutp);
             unsigned char u_ch;
             while (!feof(fp) && fread(&u_ch, sizeof(unsigned char), 1, fp))
             {
-                fwrite(bitcode[table[u_ch]].bytecode, sizeof(unsigned char), bitcode[table[u_ch]].bytes, foutp);
-                // fwrite(code[table[u_ch]], sizeof(char), strlen(code[table[u_ch]]), foutp);
+                for (int i = 0; i < strlen(code[table[u_ch]]); i++)
+                {
+                    bytes <<= 1;
+                    bytes += code[table[u_ch]][i] - '0';
+                    ++bitk;
+                    if (bitk == 8)
+                    {
+                        fwrite(&bytes, sizeof(unsigned char), 1, foutp);
+                        bytes = 0;
+                        bitk = 0;
+                    }
+                }
             }
+            while (bitk != 8 && bitk != 0)
+            {
+                bytes <<= 1;
+                ++bitk;
+            }
+            if (bitk == 8)
+                fwrite(&bytes, sizeof(unsigned char), 1, foutp); //  处理剩余部分
+            bytes = 0;
+            bitk = 0;
+            fclose(fp);
         }
         else
         {
         }
     }
+    fclose(foutp);
 }
 
 void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
@@ -200,62 +241,60 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
         i = m;
         char ch;
         unsigned char u_ch;
-        int j = 0;  //  ex_dest[j]
-        int bit[8]; //  存放读入字节的每一位，7为MSB
-
+        int j = 0;   //  ex_dest[j]
+        char bit[8]; //  存放读入字节的每一位，7为MSB
         while (!feof(fin))
         {
-            j = 0;
-            do //  读解压目标文件名
+            int len_pathname;
+            fread(&len_pathname, sizeof(int), 1, fin);
+            if (feof(fin))
+                break;
+            len_pathname++;
+            int path_i = 0;
+            i = m;
+            while (path_i < len_pathname) //  读文件名
             {
-                bool flag_filename_end = false;
                 fread(&u_ch, sizeof(unsigned char), 1, fin);
-                if (feof(fin)) {}
                 for (int k = 0; k < 8; k++)
                 {
                     bit[k] = u_ch % 2;
                     u_ch /= 2;
                 }
-
                 for (int k = 7; k >= 0; k--)
                 {
-                    ch = bit[k] + '0';
-                    if (ch == '0')
+                    if (bit[k] == 0)
+                    {
                         i = HT[i].lchild;
-                    else if (ch == '1')
+                    }
+                    else
+                    {
                         i = HT[i].rchild;
-
+                    }
                     if (HT[i].lchild == 0 && HT[i].rchild == 0)
                     {
                         u_ch = chtable[i];
-                        ex_dest[j] = u_ch - 128;
-                        j++;
-                        i = m;
-                        if (u_ch == '\0' + 128) //  文件名的\0
-                        {
-                            flag_filename_end = true;
+                        ex_dest[path_i] = u_ch;
+                        path_i++;
+                        if (path_i == len_pathname)
                             break;
-                        }
-                        break; //  已经找到字符，后面的位是无效的
+                        i = m;
                     }
                 }
-
-                if (flag_filename_end) //  文件名尾
-                    break;
-            } while (1);
-
-            if (ex_dest[strlen(ex_dest) - 1] == '/') //  创建文件夹
+            }
+            if (ex_dest[strlen(ex_dest) - 1] == '/')
             {
                 mkdir(ex_dest, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
             }
-            else //  创建文件
+            else
             {
-                if (feof(fin))
-                    break;
                 FILE *foutp = fopen(ex_dest, "wb");
                 i = m;
-                while (!feof(fin) && fread(&u_ch, sizeof(unsigned char), 1, fin))
+                long flen;
+                fread(&flen, sizeof(long), 1, fin);
+                long f_i = 0;
+                while (f_i < flen)
                 {
+                    fread(&u_ch, sizeof(unsigned char), 1, fin);
                     for (int k = 0; k < 8; k++)
                     {
                         bit[k] = u_ch % 2;
@@ -263,21 +302,22 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
                     }
                     for (int k = 7; k >= 0; k--)
                     {
-                        ch = bit[k] + '0';
-                        if (ch == '0')
+                        if (bit[k] == 0)
                         {
                             i = HT[i].lchild;
                         }
-                        else if (ch == '1')
+                        else
                         {
                             i = HT[i].rchild;
                         }
                         if (HT[i].lchild == 0 && HT[i].rchild == 0)
                         {
-                            // putchar(chtable[i]);
-                            fwrite(&chtable[i], sizeof(unsigned char), 1, foutp);
+                            u_ch = chtable[i];
+                            fwrite(&u_ch, sizeof(unsigned char), 1, foutp);
+                            f_i++;
+                            if (f_i == flen)
+                                break;
                             i = m;
-                            break;  //  后面是无效位
                         }
                     }
                 }
@@ -287,6 +327,89 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
         fclose(fin);
     }
 }
+// while (!feof(fin))
+// {
+//     j = 0;
+//     do //  读解压目标文件名
+//     {
+//         bool flag_filename_end = false;
+//         fread(&u_ch, sizeof(unsigned char), 1, fin);
+//         if (feof(fin))
+//         {
+//         }
+//         for (int k = 0; k < 8; k++)
+//         {
+//             bit[k] = u_ch % 2;
+//             u_ch /= 2;
+//         }
+
+//         for (int k = 7; k >= 0; k--)
+//         {
+//             ch = bit[k] + '0';
+//             if (ch == '0')
+//                 i = HT[i].lchild;
+//             else if (ch == '1')
+//                 i = HT[i].rchild;
+
+//             if (HT[i].lchild == 0 && HT[i].rchild == 0)
+//             {
+//                 u_ch = chtable[i];
+//                 ex_dest[j] = u_ch - 128;
+//                 j++;
+//                 i = m;
+//                 if (u_ch == '\0' + 128) //  文件名的\0
+//                 {
+//                     flag_filename_end = true;
+//                     break;
+//                 }
+//                 break; //  已经找到字符，后面的位是无效的
+//             }
+//         }
+
+//         if (flag_filename_end) //  文件名尾
+//             break;
+//     } while (1);
+
+//     if (ex_dest[strlen(ex_dest) - 1] == '/') //  创建文件夹
+//     {
+//         mkdir(ex_dest, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+//     }
+//     else //  创建文件
+//     {
+//         if (feof(fin))
+//             break;
+//         FILE *foutp = fopen(ex_dest, "wb");
+//         i = m;
+//         while (!feof(fin) && fread(&u_ch, sizeof(unsigned char), 1, fin))
+//         {
+//             for (int k = 0; k < 8; k++)
+//             {
+//                 bit[k] = u_ch % 2;
+//                 u_ch /= 2;
+//             }
+//             for (int k = 7; k >= 0; k--)
+//             {
+//                 ch = bit[k] + '0';
+//                 if (ch == '0')
+//                 {
+//                     i = HT[i].lchild;
+//                 }
+//                 else if (ch == '1')
+//                 {
+//                     i = HT[i].rchild;
+//                 }
+//                 if (HT[i].lchild == 0 && HT[i].rchild == 0)
+//                 {
+//                     // putchar(chtable[i]);
+//                     fwrite(&chtable[i], sizeof(unsigned char), 1, foutp);
+//                     i = m;
+//                     break; //  后面是无效位
+//                 }
+//             }
+//         }
+//         fclose(foutp);
+//     }
+// }
 
 void PrintHuffmanTree(HuffmanTree T, int n, unsigned char chtable[MAX_CHARS], FILE *foutp)
 {
@@ -375,65 +498,27 @@ int read_dir_r(char *path, char pathname[][MAX_CHARS], int &num_files)
     return 0;
 }
 
-void GenerateBitCode(HuffmanCode HC, BitCode *&bitcode_a, int n)
-{
-    int i = 1;
-    for (; i <= n; i++)
-    {
-        int bytes = (strlen(HC[i]) - 1) / 8 + 1;
-        bitcode_a[i].bytecode = (unsigned char *)malloc((bytes) * sizeof(unsigned char));
-        bitcode_a[i].bytes = bytes;
-
-        int j = 0, k = 0;
-        int len_HC = strlen(HC[i]);
-        for (; j < bytes; j++)
-        {
-            bitcode_a[i].bytecode[j] = 0;
-            for (k = 0; k < 8; k++)
-            {
-                bitcode_a[i].bytecode[j] <<= 1;
-                if (8 * j + k < len_HC)
-                    bitcode_a[i].bytecode[j] += HC[i][8 * j + k] - '0';
-            }
-        }
-    }
-}
-
-// if (mode == FILE_MODE)  //  单文件模式
+// void GenerateBitCode(HuffmanCode HC, BitCode *&bitcode_a, int n)
 // {
-//     unsigned char chtable[MAX_CHARS];
-//     int len_source = strlen(source);
-//     char *real_dest = (char *)malloc((len_source + 6) * sizeof(*real_dest));
-//     strcpy(real_dest, source);
-//     if (!dest) //  不是重命名
+//     int i = 1;
+//     for (; i <= n; i++)
 //     {
-//         strcat(real_dest, ".huff");
-//     }
-//     else
-//     {
-//         strcpy(real_dest, dest);        //  目标文件被重命名
-//     }
-//     n = 0;
-//     Count(w, n, table, chtable, source);
-//     HuffmanCoding(T, code, w, n);
-//     FILE *fp = fopen(source, "rb");
-//     FILE *foutp = fopen(real_dest, "wb");
-//     PrintHuffmanTree(T, n, chtable, foutp); //  打印哈弗曼树的信息
+//         int bytes = (strlen(HC[i]) - 1) / 8 + 1;
+//         bitcode_a[i].bytecode = (unsigned char *)malloc((bytes) * sizeof(unsigned char));
+//         bitcode_a[i].bytes = bytes;
+//         bitcode_a[i].len = strlen(HC[i]);
 
-//     // for (int i = 0; i <= len_source; i++)
-//     //     printf("%s", code[table[source[i]+128]]);
-
-//     for (int i = 0; i <= len_source; i++)   //  文件名压缩字符串
-//         fwrite(code[table[source[i] + 128]], sizeof(char), strlen(code[table[source[i] + 128]]), foutp);
-//     unsigned char ch;
-//     while (!feof(fp) && fread(&ch, sizeof(unsigned char), 1, fp))   //  文件内容字符串
-//     {
-//         fwrite(code[table[ch]], sizeof(char), strlen(code[table[ch]]), foutp);
-//         // printf("%s", code[table[ch+128]]);
+//         int j = 0, k = 0;
+//         int len_HC = strlen(HC[i]);
+//         for (; j < bytes; j++)
+//         {
+//             bitcode_a[i].bytecode[j] = 0;
+//             for (k = 0; k < 8; k++)
+//             {
+//                 bitcode_a[i].bytecode[j] <<= 1;
+//                 if (8 * j + k < len_HC)
+//                     bitcode_a[i].bytecode[j] += HC[i][8 * j + k] - '0';
+//             }
+//         }
 //     }
-
-//     fclose(fp);
-//     fclose(foutp);
 // }
-// if (mode == DIR_MODE)  //  压缩文件夹
-// {
