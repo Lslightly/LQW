@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 void Count(unsigned int w[MAX_CHARS], int &n, int *table, unsigned char chtable[MAX_CHARS], const char *source)
 {
     int len_source = strlen(source);
-    for (int i = 0; i <= len_source; i++) //  给源文件名统计字符
+    for (int i = 0; i < len_source; i++) //  给源文件名统计字符
     {
         if (table[source[i]] == 0)
         {
@@ -123,10 +123,10 @@ void Compress(HuffmanTree &T, unsigned int *w, HuffmanCode code, int &n, int *ta
     {
         Count(w, n, table, chtable, pathname[i]);
     }
-    HuffmanCoding(T, code, w, n);
-    bitcode = (BitCode *)malloc(sizeof(*bitcode) * (n + 1));
-    // GenerateBitCode(code, bitcode, n);
+    HuffmanCoding(T, code, w+1, n);
+
     FILE *foutp = fopen(real_dest, "wb");
+
     PrintHuffmanTree(T, n, chtable, foutp);
 
     int len_pathname = 0;
@@ -136,7 +136,7 @@ void Compress(HuffmanTree &T, unsigned int *w, HuffmanCode code, int &n, int *ta
         len_pathname = strlen(pathname[i]);
         int table_path;
         fwrite(&len_pathname, sizeof(int), 1, foutp); //  在解压时读入需要加1，因为还有一个\0
-        for (int j = 0; j <= len_pathname; j++)       //  打印文件名,包括\0符
+        for (int j = 0; j < len_pathname; j++)       //  打印文件名,包括\0符
         {
             table_path = table[pathname[i][j]];
             for (int k = 0; k < strlen(code[table_path]); k++)
@@ -200,6 +200,15 @@ void Compress(HuffmanTree &T, unsigned int *w, HuffmanCode code, int &n, int *ta
         }
     }
     fclose(foutp);
+    // double sum = 0;
+    // printf("c w p l r\n");
+    // for (int i = 1; i <= n; i++)
+    // {
+    //     sum += strlen(code[i])*T[i].weight;
+    //     printf("%c %u %u %s\n", chtable[i], T[i].weight, T[i].parent,  code[i]);
+    // }
+    // printf("%lf\n", sum/8);
+    return;
 }
 
 void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
@@ -213,7 +222,8 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
     else
     {
         FILE *fin = fopen(ex_source, "rb");
-        fread(&n, sizeof(int), 1, fin);
+        // fread(&n, sizeof(int), 1, fin);
+        fscanf(fin, "%d", &n);
         int m = 2 * n - 1;
         int i = 1;
         unsigned char chtable[MAX_CHARS];
@@ -222,21 +232,26 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
             for (i = 1; i <= n; i++)
             {
                 // scanf("%hhd%u%u%u%u", &chtable[i], &HT[i].weight, &HT[i].parent, &HT[i].lchild, &HT[i].rchild);
-                fread(&chtable[i], sizeof(unsigned char), 1, fin);
-                fread(&HT[i].weight, sizeof(unsigned int), 1, fin);
-                fread(&HT[i].parent, sizeof(unsigned int), 1, fin);
-                fread(&HT[i].lchild, sizeof(unsigned int), 1, fin);
-                fread(&HT[i].rchild, sizeof(unsigned int), 1, fin);
+                // fread(&chtable[i], sizeof(unsigned char), 1, fin);
+                // fread(&HT[i].weight, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].parent, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].lchild, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].rchild, sizeof(unsigned int), 1, fin);
+                char ch = fgetc(fin);
+                fscanf(fin, "%hhu%u%u%u%u", &chtable[i], &HT[i].weight, &HT[i].parent, &HT[i].lchild, &HT[i].rchild);
             }
             for (; i <= m; i++)
             {
                 // scanf("%u%u%u%u", &HT[i].weight, &HT[i].parent, &HT[i].lchild, &HT[i].rchild);
-                fread(&HT[i].weight, sizeof(unsigned int), 1, fin);
-                fread(&HT[i].parent, sizeof(unsigned int), 1, fin);
-                fread(&HT[i].lchild, sizeof(unsigned int), 1, fin);
-                fread(&HT[i].rchild, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].weight, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].parent, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].lchild, sizeof(unsigned int), 1, fin);
+                // fread(&HT[i].rchild, sizeof(unsigned int), 1, fin);
+                fgetc(fin);
+                fscanf(fin, "%u%u%u%u",  &HT[i].weight, &HT[i].parent, &HT[i].lchild, &HT[i].rchild);
             }
         }
+        fgetc(fin);
 
         i = m;
         char ch;
@@ -249,7 +264,6 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
             fread(&len_pathname, sizeof(int), 1, fin);
             if (feof(fin))
                 break;
-            len_pathname++;
             int path_i = 0;
             i = m;
             while (path_i < len_pathname) //  读文件名
@@ -281,6 +295,7 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
                     }
                 }
             }
+            ex_dest[path_i] = '\0';
             if (ex_dest[strlen(ex_dest) - 1] == '/')
             {
                 mkdir(ex_dest, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -327,112 +342,32 @@ void Extract(HuffmanTree &HT, HuffmanCode &HC, int &n, char *ex_source)
         fclose(fin);
     }
 }
-// while (!feof(fin))
-// {
-//     j = 0;
-//     do //  读解压目标文件名
-//     {
-//         bool flag_filename_end = false;
-//         fread(&u_ch, sizeof(unsigned char), 1, fin);
-//         if (feof(fin))
-//         {
-//         }
-//         for (int k = 0; k < 8; k++)
-//         {
-//             bit[k] = u_ch % 2;
-//             u_ch /= 2;
-//         }
-
-//         for (int k = 7; k >= 0; k--)
-//         {
-//             ch = bit[k] + '0';
-//             if (ch == '0')
-//                 i = HT[i].lchild;
-//             else if (ch == '1')
-//                 i = HT[i].rchild;
-
-//             if (HT[i].lchild == 0 && HT[i].rchild == 0)
-//             {
-//                 u_ch = chtable[i];
-//                 ex_dest[j] = u_ch - 128;
-//                 j++;
-//                 i = m;
-//                 if (u_ch == '\0' + 128) //  文件名的\0
-//                 {
-//                     flag_filename_end = true;
-//                     break;
-//                 }
-//                 break; //  已经找到字符，后面的位是无效的
-//             }
-//         }
-
-//         if (flag_filename_end) //  文件名尾
-//             break;
-//     } while (1);
-
-//     if (ex_dest[strlen(ex_dest) - 1] == '/') //  创建文件夹
-//     {
-//         mkdir(ex_dest, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-//     }
-//     else //  创建文件
-//     {
-//         if (feof(fin))
-//             break;
-//         FILE *foutp = fopen(ex_dest, "wb");
-//         i = m;
-//         while (!feof(fin) && fread(&u_ch, sizeof(unsigned char), 1, fin))
-//         {
-//             for (int k = 0; k < 8; k++)
-//             {
-//                 bit[k] = u_ch % 2;
-//                 u_ch /= 2;
-//             }
-//             for (int k = 7; k >= 0; k--)
-//             {
-//                 ch = bit[k] + '0';
-//                 if (ch == '0')
-//                 {
-//                     i = HT[i].lchild;
-//                 }
-//                 else if (ch == '1')
-//                 {
-//                     i = HT[i].rchild;
-//                 }
-//                 if (HT[i].lchild == 0 && HT[i].rchild == 0)
-//                 {
-//                     // putchar(chtable[i]);
-//                     fwrite(&chtable[i], sizeof(unsigned char), 1, foutp);
-//                     i = m;
-//                     break; //  后面是无效位
-//                 }
-//             }
-//         }
-//         fclose(foutp);
-//     }
-// }
 
 void PrintHuffmanTree(HuffmanTree T, int n, unsigned char chtable[MAX_CHARS], FILE *foutp)
 {
     int i = 1;
     // printf("%d\n", n);
-    fwrite(&n, sizeof(int), 1, foutp);
+    // fwrite(&n, sizeof(int), 1, foutp);
+    fprintf(foutp, "%d\n", n);
     int m = 2 * n - 1;
     for (i = 1; i <= n; i++)
     {
         // printf("%d %u %u %u %u\n", chtable[i], T[i].weight, T[i].parent,T[i].lchild, T[i].rchild);
-        fwrite(&chtable[i], sizeof(unsigned char), 1, foutp);
-        fwrite(&T[i].weight, sizeof(unsigned int), 1, foutp);
-        fwrite(&T[i].parent, sizeof(unsigned int), 1, foutp);
-        fwrite(&T[i].lchild, sizeof(unsigned int), 1, foutp);
-        fwrite(&T[i].rchild, sizeof(unsigned int), 1, foutp);
+        // fwrite(&chtable[i], sizeof(unsigned char), 1, foutp);
+        // fwrite(&T[i].weight, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].parent, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].lchild, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].rchild, sizeof(unsigned int), 1, foutp);
+        fprintf(foutp, "%hhu %u %u %u %u\n", chtable[i], T[i].weight, T[i].parent, T[i].lchild, T[i].rchild);
     }
     for (; i <= m; i++)
     {
         // printf("%u %u %u %u\n", T[i].weight, T[i].parent,T[i].lchild, T[i].rchild);
-        fwrite(&T[i].weight, sizeof(unsigned int), 1, foutp);
-        fwrite(&T[i].parent, sizeof(unsigned int), 1, foutp);
-        fwrite(&T[i].lchild, sizeof(unsigned int), 1, foutp);
-        fwrite(&T[i].rchild, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].weight, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].parent, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].lchild, sizeof(unsigned int), 1, foutp);
+        // fwrite(&T[i].rchild, sizeof(unsigned int), 1, foutp);
+        fprintf(foutp, "%u %u %u %u\n", T[i].weight, T[i].parent, T[i].lchild, T[i].rchild);
     }
 }
 
@@ -497,28 +432,3 @@ int read_dir_r(char *path, char pathname[][MAX_CHARS], int &num_files)
     closedir(dp);
     return 0;
 }
-
-// void GenerateBitCode(HuffmanCode HC, BitCode *&bitcode_a, int n)
-// {
-//     int i = 1;
-//     for (; i <= n; i++)
-//     {
-//         int bytes = (strlen(HC[i]) - 1) / 8 + 1;
-//         bitcode_a[i].bytecode = (unsigned char *)malloc((bytes) * sizeof(unsigned char));
-//         bitcode_a[i].bytes = bytes;
-//         bitcode_a[i].len = strlen(HC[i]);
-
-//         int j = 0, k = 0;
-//         int len_HC = strlen(HC[i]);
-//         for (; j < bytes; j++)
-//         {
-//             bitcode_a[i].bytecode[j] = 0;
-//             for (k = 0; k < 8; k++)
-//             {
-//                 bitcode_a[i].bytecode[j] <<= 1;
-//                 if (8 * j + k < len_HC)
-//                     bitcode_a[i].bytecode[j] += HC[i][8 * j + k] - '0';
-//             }
-//         }
-//     }
-// }
