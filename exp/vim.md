@@ -104,3 +104,19 @@
        - 如果文件没有被修改，但使用wq退出，则文件的修改时间会更新(混淆用户对文件修改时间的认定)，用x退出，则文件修改时间不会更新
    - **:X**(加密文件)
         - 保存密码生效
+
+*   ``d4w`` won't include the first character after ``4w``
+*   ``d4e`` will delete the last character after ``4e``
+*   ``S`` will change the whole line. It's equal to ``cc``
+
+*	x  stands for  dl  (delete character under the cursor)
+*	X  stands for  dh  (delete character left of the cursor)
+*	D  stands for  d$  (delete to end of the line)
+*	C  stands for  c$  (change to end of the line)
+*	s  stands for  cl  (change one character, and change vim mode into Insert Mode)
+*	S  stands for  cc  (change a whole line)
+*   V  visual mode select a whole line
+*   CTRL-V  select a visual block
+
+*   in visual mode, ``o`` takes me to another side of the select line. In blockwise selection, ``o`` takes me to one of the other corners, while ``O`` takes me to the other corner in the same line.
+
