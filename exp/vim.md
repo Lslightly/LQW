@@ -105,6 +105,8 @@
    - **:X**(加密文件)
         - 保存密码生效
 
+#### 2020/1/20
+
 *   ``d4w`` won't include the first character after ``4w``
 *   ``d4e`` will delete the last character after ``4e``
 *   ``S`` will change the whole line. It's equal to ``cc``
@@ -119,4 +121,60 @@
 *   CTRL-V  select a visual block
 
 *   in visual mode, ``o`` takes me to another side of the select line. In blockwise selection, ``o`` takes me to one of the other corners, while ``O`` takes me to the other corner in the same line.
+
+#### 2020/1/21
+
+*   ``p`` puts part of a line deleted just now just after the cursor
+*   it will also puts a line below the cursor
+
+*   ``P`` instead puts before the cursor or above the cursor
+
+*   ``Y`` yanks the whole line, while ``D`` deletes from the cursor to the end of the line.
+
+*   ``"*yy`` copy a line to the clipboard
+*   ``"*p`` put text from the clipboard
+
+*   ``daw`` deletes a word if the cursor is in the word.
+
+*   ``cis`` means changing Inner Sentence
+
+*   some differences between ``cis`` and ``cas``
+    *   ``cis`` won't delete the white space after the sentence
+    *   ``cas`` however will also delete the white space
+
+*   ``das`` will delete a sentence including the white space after it
+
+*   ``vas`` can include a sentence in visual mode
+
+*   text objects
+    *   For non-block objects
+        *   "a" will include the white space after the text object
+        *   "i" won't
+    *   For a block object
+        *   "a" will include the braces
+        *   "i" won't. "i" means "Inner"
+
+
+*   ``~`` change case of the character under the cursor
+*   ``I`` moves the cursor to the first non-blank in the line and enter the insert mode
+*   ``A`` moves the cursor to the end of the line and append
+
+*   ``ge`` moves the cursor to the end of the last word
+*   ``W`` & ``E`` will only consider the white space as the boundary
+
+*   ``H`` moves the cursor to the "Home"(Top) place of what you can see.
+*   ``M`` moves the cursor to the "Middle" place of what you can see.
+*   ``L`` moves the cursor to the "Last" place of what you can see.
+*   ``zz`` to see the context of the line with the cursor
+*   ``zt`` puts the cursor line to the top of the screen
+*   ``zb`` the bottom
+
+*   ``.``(dot) used in searching matches any existing character
+>   ``\.`` truly means a dot
+
+
+
+******
+
+
 
