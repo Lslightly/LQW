@@ -3,6 +3,13 @@
 
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT 10
+#define TRUE 1
+#define FALSE 0
+#define OK 1
+#define ERROR 0
+#define INFEASIBLE -1
+#define OVERFLOW -2
+typedef int Status;
 
 #include <stdlib.h>
 
@@ -25,6 +32,7 @@ public:
     bool ListInsert(int i, const Type e);
     bool ListDelete(const int i, Type & e);
     bool ListTraverse(bool (* visit)(Type & e));
+    template<Type> friend void MergeList_Sq(SqList<Type> La, SqList<Type> Lb, SqList<Type> & Lc);
 };
 
 template <class Type>
@@ -126,14 +134,16 @@ bool SqList<Type>::NextElem(const Type cur_e, Type &next_e)
     return false;
 }
 
+//  在第i个位置之前插入e
+//  i的合法值为1<=i<=length+1
 template <class Type>
 bool SqList<Type>::ListInsert(int i, const Type e)
 {
-    if (i < 0 || i > length)
+    if (i < 1 || i > length+1)  //  i值不合法
     {
         return false;
     }
-    if (length >= listsize)
+    if (length >= listsize)     //  储存空间已满
     {
         Type *newbase = (Type *)realloc(elem, sizeof(Type) * (LIST_INIT_SIZE + LISTINCREMENT));
         if (!newbase)
@@ -143,27 +153,27 @@ bool SqList<Type>::ListInsert(int i, const Type e)
         elem = newbase;
         listsize += LISTINCREMENT;
     }
-    for (int j = length - 1; j >= i; j--)
-    {
-        elem[j + 1] = elem[j];
-    }
-    elem[i] = e;
+    Type * q = &elem[i-1];
+    Type * p = elem + length - 1;
+    for (; p >= q; p--) *(p+1) = *p;
+    *q = e;
     length++;
     return true;
 }
 
+//  删除第i个元素，用e返回
+//  i的合法值范围1<=i<=length
 template <class Type>
 bool SqList<Type>::ListDelete(const int i, Type &e)
 {
-    if (i < 0 || i >= length)
+    if (i < 1 || i > length)    //  超出范围
     {
         return false;
     }
-    e = elem[i];
-    for (int j = i; j < length - 1; j++)
-    {
-        elem[j] = elem[j + 1];
-    }
+    Type * p = &elem[i-1];
+    Type * q = elem + length -1;
+    e = *p;
+    for (; p < q; p++) *p = *(p+1);
     length--;
     return true;
 }
@@ -179,5 +189,27 @@ bool SqList<Type>::ListTraverse(bool (*visit)(Type &e))
         }
     }
     return true;
+}
+
+//  La，Lb的元素已经按照非递减的顺序排列
+template <class Type>
+void MergeList_Sq(SqList<Type> La, SqList<Type> Lb, SqList<Type> & Lc)
+{
+    Type * pa = La.elem; Type * pb = Lb.elem;
+    Lc.listsize = Lc.length = La.length + Lb.length;
+
+    Type * pc = Lc.elem = (Type *)malloc(Lc.listsize * sizeof(*pc));
+
+    if (!Lc.elem) exit(-1);
+    Type * pa_last = La.elem + La.length - 1;
+    Type * pb_last = Lb.elem + Lb.length - 1;
+
+    while (pa <= pa_last && pb <= pb_last)
+    {
+        if (*pa <= *pb) *pc++ = *pa++;
+        else *pc++ = *pb++;
+    }
+    while (pa <= pa_last) *pc++ = *pa++;
+    while (pb <= pb_last) *pc++ = *pb++;
 }
 #endif
