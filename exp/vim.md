@@ -170,11 +170,66 @@
 *   ``zb`` the bottom
 
 *   ``.``(dot) used in searching matches any existing character
->   ``\.`` truly means a dot
+>   ``\.`` really means a dot
 
 
 
 ******
 
+#### 2020/1/23
+
+##### topics about "file"
+
+*   when open a sequence of files, use ``:next`` to edit the next file.
+*   use ``:wnext`` to ``write`` and go to the ``next`` file. Add ! to abandon changes.
+*   use ``:args`` to know where you are
+*   use ``CTRL-^`` to jump from file to file
+*   ```"`` records where you leave the file
+*   ```.`` records where you made the last change
+*   uppercase mark like "mB" will set "B" as a global mark.
+*   use ``:marks M`` to see where "M" marks
+
+*   ``"fyas`` means yanking a sentence and putting it to the "f" register
+*   ``"fp""`` surely means putting the content in the "f" register
+*   ``ge`` means moving the cursor to the last word's end.
+*   ``:write >> logfile`` will append the text of current file into the "logfile".
+
+*   ``vim -R file`` edits the file read-only
+*   ``:saveas move.c`` save as another file
+*   ``:file move.c`` rename the file
+
+##### topics about "splitting windows" in |usr_08.txt|
+
+*   ``CTRL-W CTRL-W`` or ``CTRL-W w`` is used to jump between windows
+*   ``:close`` to close the window
+*   ``:only`` to close all other windows
+*   ``:split two.c`` will open a new window and edit the given file
+*   ``:new`` will open a new and empty file
+*   ``4 CTRL-W +`` will make the window four lines higher
+*   ``CTRL-W _`` to make a window as high as it can be
+*   ``:vnew`` is used to open a vertically split new and empty window
+*   ``CTRL-W K`` the second uppercase "K" means move the window to the very top
+*   to command all windows, use ``all`` after normal command
+*   to open a window for all arguments, use ``-o`` in the command line, like ``vim -o 1.txt 2.txt``
+*   ``-O`` gets vertically split windows
+
+*   use ``vimdiff`` to see the difference between two files
+*   ``zo`` to open a fold and ``zc`` to close a fold
+
+*   ``:tabedit file`` will open a new tab
+*   ``gt`` will goto another tab
+*   ``:tab split`` will make a new tab in one window
+
+##### topic about "making big changes" in usr_10.txt
+
+*   command sequence will be stores in regsiters and you can put it in the end of the file and change it and again yank it back to the register. You don't have to again recording the whole command sequence, but just **modify a bit**.
+*   ``qC`` records to the "c" register and **appends**
+
+*   ``:s/ / /c``
+    *   y Yes
+    *   n No
+    *   a all
+    *   q quit, no more
+    *   l last, then quit
 
 

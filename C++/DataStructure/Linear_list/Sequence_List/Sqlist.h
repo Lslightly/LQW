@@ -52,8 +52,6 @@ SqList<Type>::~SqList()
 template <class Type>
 void SqList<Type>::ClearList(void)
 {
-    free(elem);
-    elem = (Type *)malloc(sizeof(Type) * LIST_INIT_SIZE);
     length = 0;
     listsize = LIST_INIT_SIZE;
 }
@@ -87,14 +85,11 @@ bool SqList<Type>::GetElem(const int i, Type &e)
 template <class Type>
 int SqList<Type>::LocateElem(const Type e, bool (*compare)(const Type a, const Type b))
 {
-    for (int i = 0; i < length; i++)
-    {
-        if (compare(elem[i], e))
-        {
-            return i;
-        }
-    }
-    return -1;
+    int i = 1;
+    Type * p = elem;
+    while (i <= length && !(*compare)(*p++, e)) ++i;
+    if (i <= length) return i;
+    else return 0;
 }
 
 bool equal(const int a, const int b)
