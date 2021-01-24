@@ -232,4 +232,63 @@
     *   q quit, no more
     *   l last, then quit
 
+#### 2020/1/24
+
+*   ``.`` in ranges means **current line**
+*   ``$`` in ranges means **the last line of the file**
+
+>   eg: ``:.,$s/yes/no`` means changing the first yes to no from current line to the last line of the file
+
+*   ``?^Chapter?`` finds the line above the current position that matches this pattern.
+*   ``/^Chapter/`` to search forward
+*   ``:?^Chapter?,/^Chapter/s=grey=gray=g`` means changing grey to gray in **this Chapter**
+*   use **offset** for ranges, like ``:.+3,$-6s/...``, which means three lines below the cursor and 6 lines above the last line
+*   marks can be used for ranges. use "t" mark by ``'t"
+*   '< is the mark placed at the start of the Visual selection, '> the end
+*   use "5:" to get a range ":.,.+4"
+
+##### global command
+
+*   ``g+//+s/foobar/barfoo/g`` means finding "//" pattern in the global file and chaning "foobar" to "barfoo"
+
+#### Visual block mode
+
+*   ``I{string}<Esc>`` inserts {string} in each line, just left of **the visual block**
+*   ``A`` works the same way, but it will also append characters in the same column place
+*   use ``$`` to append in the end of each line.
+*   ``c{string}<Esc>`` to change the visual block
+*   ``C...`` to change from the left edge of the block to the end of the line
+*   ``~`` swap case
+*   ``U`` make Uppercase
+*   ``u`` make lowercase
+*   ``>`` to shift right
+*   ``<`` to shift left
+*   ``J`` joins all selected lines together into one line
+
+#### reading and writing part of a file
+
+*   ``:read file`` will append the file content below the cursor line. It also accepts a range.
+*   ``:0read file`` means put the file content above the first line of the file
+
+*   ``:.,$write tempo`` means writing lines from the cursor until the end of the file into file tempo
+*   ``:.write >>collection`` means appending the current line to the end of file collection
+
+#### formatting text
+
+*   ``gq`` format something like a paragraph(``qgap``)
+
+#### changing case
+
+*   ``gUw`` to make a word UPPERCASE
+*   ``guw`` the opposite
+*   ``g~w`` swap each case
+*   ``gUU`` makes the whole line UPPERCASE
+*   ``guu``, ``g~~`` the whole line
+
+#### !
+
+*   ``!5Gsort`` use the sort program, which will run on the first 5 lines.(cursor line is 1)
+*   ``:read !ls`` will read the command output
+
+
 
