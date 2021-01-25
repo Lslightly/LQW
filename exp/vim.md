@@ -251,7 +251,7 @@
 
 *   ``g+//+s/foobar/barfoo/g`` means finding "//" pattern in the global file and chaning "foobar" to "barfoo"
 
-#### Visual block mode
+##### Visual block mode
 
 *   ``I{string}<Esc>`` inserts {string} in each line, just left of **the visual block**
 *   ``A`` works the same way, but it will also append characters in the same column place
@@ -265,7 +265,7 @@
 *   ``<`` to shift left
 *   ``J`` joins all selected lines together into one line
 
-#### reading and writing part of a file
+##### reading and writing part of a file
 
 *   ``:read file`` will append the file content below the cursor line. It also accepts a range.
 *   ``:0read file`` means put the file content above the first line of the file
@@ -273,11 +273,11 @@
 *   ``:.,$write tempo`` means writing lines from the cursor until the end of the file into file tempo
 *   ``:.write >>collection`` means appending the current line to the end of file collection
 
-#### formatting text
+##### formatting text
 
 *   ``gq`` format something like a paragraph(``qgap``)
 
-#### changing case
+##### changing case
 
 *   ``gUw`` to make a word UPPERCASE
 *   ``guw`` the opposite
@@ -285,10 +285,52 @@
 *   ``gUU`` makes the whole line UPPERCASE
 *   ``guu``, ``g~~`` the whole line
 
-#### !
+##### !
 
 *   ``!5Gsort`` use the sort program, which will run on the first 5 lines.(cursor line is 1)
 *   ``:read !ls`` will read the command output
 
 
+#### 2020/1/25
+
+##### Basic Recovery
+
+*   ``vim -r help.txt``. Vim will read the swap file stored before the computer crashed
+*   ``vim -r ""`` to read the swap file for a file without name
+
+##### the location of swap file
+
+*   ``vim -r`` to list swap files for files in the current directory
+
+#### Clever tricks
+
+##### Replacing in several files
+
+*   example
+    1.  vim *.cpp
+    2.  qq
+    3.  :%s/\<GetResp\>/GetAnswer/ge(e means not finding a match is not an error)
+    4.  :wnext
+    5.  q
+    6.  999@q
+
+> it will change all GetResp to GetAnswer in *.cpp files
+
+##### Change
+
+``:%s/\([^,]*\), \(.*\)/\2 \1``
+*   ``:.,/^$/-1!sort`` means from the current line until the next empty line(^$)(one line above the empty line), then use sort
+*   ``4;/...`` means from line 4 till match ... after line 4
+*   ``4,/...`` means from line 4 till match ... after the cursor line
+
+*   ``:g/^/m 0`` to reverse the file
+
+*   ``gCTRL-G`` to count words
+
+##### find man page
+
+*   example ``stdio.h``, in normal mode, use ``K``, ``\K`` for the word under the cursor
+
+*   ``:Man stdio`` will also display the man page for stdio
+*   ``:runtime! ftplugin/man.vim`` to make the man page appear in a vim window
 

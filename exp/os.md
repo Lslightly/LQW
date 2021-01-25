@@ -50,3 +50,16 @@ a system with only one general-purpose CPU is a single-processor system
 
 multiprocessor system(parallel system, multicore system)
 
+*   two types
+    1.  asymmetric multiprocessing
+    2.  symmetric multiprocessing
+
+>   very difficult to memorize some new concepts
+
+### 1.4 Operating-System Structure
+
+I don't know anything!!!
+
+### 1.5 Operating-System Operations
+
+
