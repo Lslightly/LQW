@@ -105,7 +105,7 @@
    - **:X**(加密文件)
         - 保存密码生效
 
-#### 2020/1/20
+#### 2021/1/20
 
 *   ``d4w`` won't include the first character after ``4w``
 *   ``d4e`` will delete the last character after ``4e``
@@ -122,7 +122,7 @@
 
 *   in visual mode, ``o`` takes me to another side of the select line. In blockwise selection, ``o`` takes me to one of the other corners, while ``O`` takes me to the other corner in the same line.
 
-#### 2020/1/21
+#### 2021/1/21
 
 *   ``p`` puts part of a line deleted just now just after the cursor
 *   it will also puts a line below the cursor
@@ -176,7 +176,7 @@
 
 ******
 
-#### 2020/1/23
+#### 2021/1/23
 
 ##### topics about "file"
 
@@ -232,7 +232,7 @@
     *   q quit, no more
     *   l last, then quit
 
-#### 2020/1/24
+#### 2021/1/24
 
 *   ``.`` in ranges means **current line**
 *   ``$`` in ranges means **the last line of the file**
@@ -291,7 +291,7 @@
 *   ``:read !ls`` will read the command output
 
 
-#### 2020/1/25
+#### 2021/1/25
 
 ##### Basic Recovery
 

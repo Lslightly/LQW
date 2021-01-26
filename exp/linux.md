@@ -318,3 +318,18 @@ gnome-screenshot 对应截屏命令
 gnome-screenshot -a 对应选择区域截屏
 gnome-screenshot -w 截屏当前窗口命令
 ```
+
+## 2021/1/26 显卡驱动似乎挂了，导致进不去tty1图形界面
+
+*   现象：``/dev/sda4: clean ...blocks, ...files``
+*   可能原因
+    *   昨天晚上为了换显示屏，把电脑屏幕投影到电视大屏上，装上了NVIDIA驱动(460 tested)，后来想想还是用原来的``X.Org X server -- Nouveau display driver from xserver-xorg-vedio-nouveau(open source)``好了，结果今早就不能进入图形界面了，无奈只能``CTRL-ALT-F2``进入tty2终端命令行装回英伟达驱动
+
+*   操作
+    1.  ctrl+alt+F2
+    2.  登录
+    3.  sudo ubuntu-drivers install
+    4.  然后切回tty1, ctrl+alt+F1好像就可以了(可能是我在tty3终端工作太久导致tty1等待时间过了自动进入了？不过大概率是因为装了驱动)
+    5.  如果不行，切回tty2重启试试
+
+
