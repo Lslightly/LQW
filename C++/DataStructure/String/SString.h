@@ -157,4 +157,40 @@ void get_nextval(SString T, int *nextval)
     }
 }
 
+int StrLength(SString S)
+{
+    return S[0];
+}
+
+int StrCompare(SString S, SString T)
+{
+    int i;
+    for (i = 1; i <= S[0] && i <= T[0]; i++)
+    {
+        if (S[i] != T[i]) return S[i] - T[i];
+    }
+    return S[0] - T[0];
+}
+
+Status StrCopy(SString &T, SString S)
+{
+    T[0] = S[0];
+    for (int i = 1; i <= S[0]; i++)
+    {
+        T[i] = S[i];
+    }
+    return OK;
+}
+
+Status ClearStr(SString &S)
+{
+    S[0] = 0;
+    return OK;
+}
+
+Status StrEmpty(SString S)
+{
+    if (S[0] == 0) return TRUE;
+    else return FALSE;
+}
 #endif
