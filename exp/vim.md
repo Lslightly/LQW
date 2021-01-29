@@ -334,3 +334,41 @@
 *   ``:Man stdio`` will also display the man page for stdio
 *   ``:runtime! ftplugin/man.vim`` to make the man page appear in a vim window
 
+##### trim blanks
+
+*   ``:%s/\s\+$//`` will delete space line in the whole file
+*   ``/<Space><Tab>`` will find the Space-Tab pattern
+
+##### find string within files
+
+*   ``:grep string *.c`` will find all matches and put the cursor on the first matching line.
+*   use ``:cnext`` to check next matching line
+*   use ``:clist`` to check all the matches and where they are
+
+##### typing command line quickly
+
+*   in the command line
+    *   <Left> move the cursor one character left
+    *   <C-Left> move the cursor one word left
+    *   CTRL-B move to the begin of command line
+    *   CTRL-E move to the end of command line
+    *   CTRL-W to delete a whole word
+    *   CTRL-U to remove all text
+    *   <Insert> to toggle between insert mode and replace mode
+    *   CTRL-C or <Esc> to exit the command line and back to the normal mode
+
+##### Command Line completion
+
+*   <Tab> to complete
+*   CTRL-P to go through the matching pattern list in the other direction
+
+##### command line window
+
+*   ``q:`` to open a command line window, where you can edit with most commands
+*   <Enter> will execute the line under the cursor. you can edit the line
+
+#### mixing the use of other programs with Vim
+
+
+
+

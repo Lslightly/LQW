@@ -362,8 +362,26 @@ gnome-screenshot -w 截屏当前窗口命令
     *   2--SGID
     *   1--SBIT
 
->   chmod 4755 test
+>   chmod 4755 test 加S权限
 
+## 观察文件类型:file
 
+*   ``file``可以查看文件的类型
+*   可以用来判断tar包用的压缩格式
 
+## 文件查找、命令查找
+
+### 脚本文件查找
+
+*   ``which``查找执行文件，根据PATH查找
+
+### 查找文件
+
+*   ``whereis``或者``locate``
+*   ``whereis``
+    *   ``-l``列出whereis查找的主要目录
+    *   ``-b``只找二进制文件
+    *   ``-m``manual路径下的文件
+*   ``locate``通过查找数据库实现
+*   ``updatedb``来更新数据库
 
