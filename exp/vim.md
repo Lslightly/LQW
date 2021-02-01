@@ -369,6 +369,21 @@
 
 #### mixing the use of other programs with Vim
 
+##### suspend and resume
+
+*   ``CTRL-Z`` to suspend and ``fg`` to resume
+
+##### executing shell commands
+
+*   ``!program`` execute the program
+*   ``:r !program`` execute the program and read its output
+*   ``:w !program`` send this file as the program's input
+*   ``range!program`` filter text through program
+*   ``:shell`` to start a new shell, ``exit`` to come back
+
+*   ``'0`` takes you back to where you left vim
+*   ``'0`` points back to ``'1``, which is earlier
+
 
 
 
