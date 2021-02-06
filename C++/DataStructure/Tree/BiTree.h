@@ -13,7 +13,7 @@ using namespace std;
 #define INFEASIBLE -1
 #define OVERFLOW -2
 typedef int Status;
-typedef char TElemType;
+typedef int TElemType;
 
 #define MAX_TREE_SIZE 100
 typedef TElemType SqBiTree[MAX_TREE_SIZE];
