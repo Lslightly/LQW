@@ -1,5 +1,16 @@
+#ifndef BTREE_H_
+#define BTREE_H_ 1
+//  B-树
 #include <stdio.h>
 #include <stdlib.h>
+
+#define TRUE 1
+#define FALSE 0
+#define OK 1
+#define ERROR 0
+#define INFEASIBLE -1
+#define OVERFLOW -2
+typedef int Status;
 
 #define m 3     //  阶数
 
@@ -54,6 +65,7 @@ int Search(BTree p, KeyType K)
     return i;
 }
 
+//  若插入结点之后引起结点过大，需要沿双亲链进行分裂调整
 bool InsertBTree(BTree &T, KeyType K, BTree q, int i)
 {
     BTree ap = nullptr;
@@ -89,15 +101,30 @@ void Insert(BTree & q, int i, int x, BTree & ap)
     }
     q->key[i+1] = x;
     q->ptr[i+1] = ap;
+    ap->parent = q;
 }
 
-void split(BTree & q, int s, BTree ap)
+void split(BTree & q, int s, BTree &ap)
 {
     ap = (BTree)malloc(sizeof(BTNode));
-
+    ap->keynum = m-s;
+    ap->ptr[0] = q->ptr[s];
+    for (int i = s+1; i <= m; i++)
+    {
+        ap->key[i-s] = q->key[i];
+        ap->recptr[i-s] = q->recptr[i];
+        ap->ptr[i-s] = q->ptr[i];
+    }
 }
 
 void NewRoot(BTree & T, BTree q, int x, BTree & ap)
 {
-
+    BTree temp_T = T;
+    T = (BTree)malloc(sizeof(*T));
+    T->keynum = 1;
+    T->parent = nullptr;
+    T->key[1] = x;
+    T->ptr[0] = temp_T;
+    T->ptr[1] = ap;
 }
+#endif
