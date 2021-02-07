@@ -1,3 +1,6 @@
+#ifndef SORT_H_
+#define SORT_H_ 1
+//  SORT
 #include <stdio.h>
 #include "../Stack_Queue/Stack/cStack.h"
 
@@ -295,3 +298,4 @@ void MergeSort1(SqList &L)
     MSort1(L.r, 1, L.length, L.length, begin, end);
 }
 
+#endif
