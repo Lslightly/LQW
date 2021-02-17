@@ -66,5 +66,24 @@ nothing
 
 ##  Chapter2
 
+# Part 2 Process Management
+
+Process---the unit of work in most systems
+
+operating system processes---system code
+
+user processes---user code
+
+responsibilities of the operating systems:
+
+1.  creation and deletion of user and system processes
+2.  scheduling of processes
+3.  provide mechanisms for syncronization, communications and deadlock handling
+
+## Chapter3
+
+
+
+
 
 
