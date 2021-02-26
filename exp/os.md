@@ -82,7 +82,36 @@ responsibilities of the operating systems:
 
 ## Chapter3
 
+### Process Scheduling
 
+#### context switch
+
+1.  when interrupt occurs, save the current context(in PCB) of the process to suspend the process and then resume it
+2.  state save & state restore
+3.  context switch: a state save of the current process and a state restore of a different process
+
+### Operations on Processes
+
+mechanisms in creating processes & process creation on Unix and Windows systems
+
+#### Process Creation
+
+1.  a unique process identifier(pid, int) to identify processes
+2.  ``init``(pid 1) serves as the root parent process of all user processes
+3.  ``kthreadd`` creates additional processes that perform tasks on behalf of the kernel
+4.  ``sshd`` manages clients that connect to the system by ``ssh``
+5.  ``login`` manages clients that directly log onto the system
+6.  child process obtain its resources(CPU time, memory, I/O devices) from the os, or the subset of resources of its parent
+7.  parent process may partition its resources or share resources among its children
+8.  parent process may pass along initialization data and output device
+9.  when a process creates a new process
+    1.  execution
+        1.  parent execute with its children
+        2.  parent waits until some of its children have terminated
+    2.  address-space
+        1.  child process is a copy of the parent
+        2.  ... a new program
+10. 
 
 
 
