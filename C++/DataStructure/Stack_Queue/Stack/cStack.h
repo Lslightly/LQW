@@ -17,7 +17,7 @@ typedef int ElemType;
 
 
 
-typedef int SElemType;
+typedef char SElemType;
 
 typedef struct
 {
